@@ -1,7 +1,9 @@
+import type { RequestHandler } from "@sveltejs/kit";
+
 import { dev } from "$app/environment";
 import { googleAuth } from "$lib/server/lucia";
 
-export const GET = async ({ cookies }) => {
+export const GET: RequestHandler = async ({ cookies }) => {
   const [url, state] = await googleAuth.getAuthorizationUrl();
   cookies.set("google_oauth_state", state, {
     httpOnly: true,
