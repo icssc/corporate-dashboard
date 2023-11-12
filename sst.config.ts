@@ -11,9 +11,7 @@ export default {
   stacks(app) {
     app.stack(function Site({ stack }) {
       const site = new SvelteKitSite(stack, "site");
-      stack.addOutputs({
-        url: site.url,
-      });
+      stack.addOutputs({ url: site.url });
     });
     if (app.stage !== "prod") {
       app.setDefaultRemovalPolicy("destroy");
