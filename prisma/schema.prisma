@@ -1,0 +1,57 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Do not modify anything above this line unless you know what you are doing.
+
+enum ContactStatus {
+  BLAH
+}
+
+model User {
+  id           String    @id @unique
+  auth_session Session[]
+  key          Key[]
+}
+
+model Key {
+  id              String  @id @unique
+  hashed_password String?
+  user_id         String
+  user            User    @relation(references: [id], fields: [user_id], onDelete: Cascade)
+
+  @@index([user_id])
+}
+
+model Session {
+  id             String @id @unique
+  user_id        String
+  active_expires BigInt
+  idle_expires   BigInt
+  user           User   @relation(references: [id], fields: [user_id], onDelete: Cascade)
+
+  @@index([user_id])
+}
+
+model Company {
+  id      Int       @id @unique @default(autoincrement())
+  name    String
+  url     String
+  Contact Contact[]
+}
+
+model Contact {
+  id        Int           @id @unique @default(autoincrement())
+  name      String
+  email     String
+  title     String
+  companyId Int
+  company   Company       @relation(fields: [companyId], references: [id])
+  status    ContactStatus
+}
