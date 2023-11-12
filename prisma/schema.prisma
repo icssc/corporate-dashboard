@@ -48,16 +48,16 @@ model Session {
 }
 
 model Company {
-  id      String    @id @unique @default(uuid())
-  name    String
-  url     String?
-  Contact Contact[]
+  id       String    @id @unique @default(uuid())
+  name     String
+  url      String?
+  contacts Contact[]
 }
 
 model Contact {
   id                    String        @id @unique @default(uuid())
   name                  String
-  email                 String
+  email                 String?
   title                 String?
   companyId             String
   company               Company       @relation(fields: [companyId], references: [id])
