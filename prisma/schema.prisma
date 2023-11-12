@@ -11,7 +11,13 @@ datasource db {
 // Do not modify anything above this line unless you know what you are doing.
 
 enum ContactStatus {
-  BLAH
+  NOT_CONTACTED
+  INITIAL_EMAIL_SENT
+  IN_PROGRESS_AUTOMATION_DISABLED
+  AUTOMATED_FOLLOWUP_SENT
+  BOUNCED
+  REJECTED
+  SEE_NEXT_YEAR
 }
 
 model User {
@@ -42,20 +48,22 @@ model Session {
 }
 
 model Company {
-  id      String       @id @unique @default(uuid())
+  id      String    @id @unique @default(uuid())
   name    String
   url     String?
   Contact Contact[]
 }
 
 model Contact {
-  id              String           @id @unique @default(uuid())
-  name            String
-  email           String
-  title           String?
-  companyId       String
-  company         Company       @relation(fields: [companyId], references: [id])
-  status          ContactStatus
-  committeeMemberUserId          String
-  committeeMember User?          @relation(fields: [committeeMemberUserId], references: [id])
+  id                    String        @id @unique @default(uuid())
+  name                  String
+  email                 String
+  title                 String?
+  companyId             String
+  company               Company       @relation(fields: [companyId], references: [id])
+  status                ContactStatus
+  committeeMemberUserId String
+  committeeMember       User?         @relation(fields: [committeeMemberUserId], references: [id])
+  lastContactDate       DateTime?
+  followupDate          DateTime?
 }
