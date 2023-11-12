@@ -1,1 +1,1 @@
-/// <reference path="../.sst/types/index.ts" />
+import type * as _ from "../.sst/types/index.ts";

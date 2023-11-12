@@ -15,5 +15,8 @@ export default {
         url: site.url,
       });
     });
+    if (app.stage !== "prod") {
+      app.setDefaultRemovalPolicy("destroy");
+    }
   },
 } satisfies SSTConfig;

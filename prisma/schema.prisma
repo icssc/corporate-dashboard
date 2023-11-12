@@ -19,6 +19,7 @@ model User {
   auth_session Session[]
   key          Key[]
   Contact      Contact[]
+  email        String?
 }
 
 model Key {
