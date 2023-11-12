@@ -42,18 +42,18 @@ model Session {
 }
 
 model Company {
-  id      Int       @id @unique @default(autoincrement())
+  id      String       @id @unique @default(uuid())
   name    String
   url     String?
   Contact Contact[]
 }
 
 model Contact {
-  id              Int           @id @unique @default(autoincrement())
+  id              String           @id @unique @default(uuid())
   name            String
   email           String
   title           String?
-  companyId       Int
+  companyId       String
   company         Company       @relation(fields: [companyId], references: [id])
   status          ContactStatus
   committeeMemberUserId          String
