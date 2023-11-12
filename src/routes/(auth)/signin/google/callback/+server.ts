@@ -16,7 +16,10 @@ export const GET: RequestHandler = async ({ url, cookies, locals }) => {
     const user = existingUser
       ? existingUser
       : await createUser({ attributes: { email: googleUser.email } });
-    const session = await auth.createSession({ userId: user.userId, attributes: {} });
+    const session = await auth.createSession({
+      userId: user.userId,
+      attributes: { email: user.email },
+    });
     locals.auth.setSession(session);
     return new Response(null, { status: 302, headers: { Location: "/" } });
   } catch (e) {
