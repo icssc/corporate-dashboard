@@ -17,9 +17,7 @@ export const auth = lucia({
   adapter: prisma(client),
   env: dev ? "DEV" : "PROD",
   middleware: sveltekit(),
-  getUserAttributes: (data) => ({
-    email: data.email,
-  }),
+  getUserAttributes: (data) => ({ email: data.email }),
 });
 
 export const googleAuth = google(auth, {
