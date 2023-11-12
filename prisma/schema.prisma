@@ -66,4 +66,5 @@ model Contact {
   committeeMember       User?         @relation(fields: [committeeMemberUserId], references: [id])
   lastContactDate       DateTime?
   followupDate          DateTime?
+  notes                 String        @db.Text
 }
