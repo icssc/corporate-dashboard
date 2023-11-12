@@ -1,7 +1,31 @@
 <script lang="ts">
-  import type { PageData } from "./$types";
-  export let data: PageData;
+  import type { GetCompany } from "$api/company";
+  import { createQuery } from "@tanstack/svelte-query";
+
+  const query = createQuery<GetCompany>({
+    queryKey: ["repoData"],
+    queryFn: async () => await fetch("/api/company").then((r) => r.json()),
+  });
+
+  $: console.log($query.data);
 </script>
 
-<h1>Welcome to SvelteKit, {data.name}</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<table>
+  <thead>
+    <tr>
+      <th>Contact Name</th>
+      <th>Contact Email</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {#if $query.isSuccess}
+      {#each $query.data as { id, name, url } (id)}
+        <tr>
+          <td>{name}</td>
+          <td>{url}</td>
+        </tr>
+      {/each}
+    {/if}
+  </tbody>
+</table>

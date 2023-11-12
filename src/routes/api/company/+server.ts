@@ -6,22 +6,23 @@ import parseIntSearchParams from "$lib/helpers/parseIntSearchParams";
 import prisma from "$lib/server/prisma";
 import { CompanyInput } from "$lib/zod/types";
 
-export const GET: RequestHandler = ({ url }) => {
+const findMany = (take: number = 50, skip?: number) =>
+  prisma.company.findMany({
+    select: {
+      id: true,
+      name: true,
+      url: true,
+    },
+    take,
+    skip,
+  });
+export const GET: RequestHandler = async ({ url }) => {
   const first = parseIntSearchParams(url, "first");
   const skip = parseIntSearchParams(url, "skip");
 
-  return json(
-    prisma.company.findMany({
-      select: {
-        id: true,
-        name: true,
-        url: true,
-      },
-      take: first,
-      skip: skip,
-    }),
-  );
+  return json(await findMany(first, skip));
 };
+export type GetCompany = Awaited<ReturnType<typeof findMany>>;
 
 export const POST: RequestHandler = ({ request }) => {
   const input = CompanyInput.safeParse(request.json());
