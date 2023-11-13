@@ -1,4 +1,74 @@
+:root {
+  --background: #ffffff;
+  --gray100: #d4d4dd;
+  --gray200: #a6a7b2;
+  --gray300: #7b7b83;
+  --gray400: #525256;
+  --gray500: #2e2d2f;
+  --gray600: #080808;
+  --pink100: #ffc6d6;
+  --pink200: #f785a2;
+  --pink300: #b96177;
+  --pink400: #774450;
+  --pink500: #3e282d;
+  --pink600: #0b0707;
+  --aqua100: #97e2e2;
+  --aqua200: #57b6b6;
+  --aqua300: #488686;
+  --aqua400: #385858;
+  --aqua500: #233030;
+  --aqua600: #070808;
+  --periwinkle100: #d0d2f1;
+  --periwinkle200: #a0a3e2;
+  --periwinkle300: #7272cf;
+  --periwinkle400: #4344b2;
+  --periwinkle500: #121d86;
+  --periwinkle600: #000032;
+  --purple100: #f3c8ee;
+  --purple200: #dd8bda;
+  --purple300: #bb51bc;
+  --purple400: #8e1e8e;
+  --purple500: #570057;
+  --purple600: #120311;
+
+  @media (prefers-color-scheme: dark) {
+    --background: #000000;
+    --gray100: #2b2a2c;
+    --gray200: #4a4a4d;
+    --gray300: #6e6e75;
+    --gray400: #9b9ca5;
+    --gray500: #cfcfd9;
+    --gray600: #fbf8fb;
+    --pink100: #3a2529;
+    --pink200: #693e48;
+    --pink300: #a3586b;
+    --pink400: #e97a96;
+    --pink500: #ffbed0;
+    --pink600: #fff7f9;
+    --aqua100: #222d2d;
+    --aqua200: #344f4f;
+    --aqua300: #447777;
+    --aqua400: #53aaaa;
+    --aqua500: #8adede;
+    --aqua600: #f4fbfa;
+    --periwinkle100: #0d1981;
+    --periwinkle200: #383caa;
+    --periwinkle300: #6363c7;
+    --periwinkle400: #9496de;
+    --periwinkle500: #cccdf0;
+    --periwinkle600: #fbf8fe;
+    --purple100: #510050;
+    --purple200: #821483;
+    --purple300: #ae41af;
+    --purple400: #d57cd4;
+    --purple500: #f1c1ec;
+    --purple600: #fff7fd;
+  }
+}
+
 html {
+  background-color: var(--background);
+  color: var(--gray600);
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -13,4 +83,8 @@ html {
     noto,
     arial,
     sans-serif;
+}
+
+body {
+  margin: 0;
 }
