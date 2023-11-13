@@ -63,9 +63,9 @@ model Contact {
   companyId             String
   company               Company       @relation(fields: [companyId], references: [id])
   status                ContactStatus
-  committeeMemberUserId String
+  committeeMemberUserId String?
   committeeMember       User?         @relation(fields: [committeeMemberUserId], references: [id])
   lastContactDate       DateTime?
   followupDate          DateTime?
-  notes                 String        @db.Text
+  notes                 String?       @db.Text
 }
