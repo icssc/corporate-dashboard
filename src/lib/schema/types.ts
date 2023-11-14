@@ -14,6 +14,7 @@ const ContactStatus = z.enum([
   "REJECTED",
   "SEE_NEXT_YEAR",
 ]);
+
 export const ContactInput = z.object({
   name: z.string(),
   email: z.string().url().optional(),

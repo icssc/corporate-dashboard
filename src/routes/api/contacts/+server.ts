@@ -2,9 +2,9 @@ import { error, json } from "@sveltejs/kit";
 
 import type { RequestHandler } from "./$types";
 
-import parseIntSearchParams from "$lib/helpers/parseIntSearchParams";
-import prisma from "$lib/server/prisma";
-import { ContactInput } from "$lib/zod/types";
+import { ContactInput } from "$lib/schema/types";
+import { prisma } from "$lib/server/prisma";
+import { parseIntSearchParams } from "$lib/util/parseIntSearchParams";
 
 const findMany = (take: number = 50, skip?: number) =>
   prisma.contact.findMany({
@@ -24,17 +24,16 @@ const findMany = (take: number = 50, skip?: number) =>
     take,
     skip,
   });
-export const GET: RequestHandler = async ({ url }) => {
-  const first = parseIntSearchParams(url, "first");
-  const skip = parseIntSearchParams(url, "skip");
-
+export const GET: RequestHandler = async (event) => {
+  const first = parseIntSearchParams(event.url, "first");
+  const skip = parseIntSearchParams(event.url, "skip");
   return json(await findMany(first, skip));
 };
+
 export type GetContacts = Awaited<ReturnType<typeof findMany>>;
 
-export const POST: RequestHandler = ({ request }) => {
-  const input = ContactInput.safeParse(request.json());
-
+export const POST: RequestHandler = async (event) => {
+  const input = ContactInput.safeParse(event.request.json());
   if (input.success) {
     return json(
       prisma.contact.create({

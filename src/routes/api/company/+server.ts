@@ -2,9 +2,9 @@ import { error, json } from "@sveltejs/kit";
 
 import type { RequestHandler } from "./$types";
 
-import parseIntSearchParams from "$lib/helpers/parseIntSearchParams";
-import prisma from "$lib/server/prisma";
-import { CompanyInput } from "$lib/zod/types";
+import { CompanyInput } from "$lib/schema/types";
+import { prisma } from "$lib/server/prisma";
+import { parseIntSearchParams } from "$lib/util";
 
 const findMany = (take: number = 50, skip?: number) =>
   prisma.company.findMany({

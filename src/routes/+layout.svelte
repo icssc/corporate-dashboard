@@ -4,7 +4,7 @@
   import type { LayoutData } from "./$types";
   import { browser } from "$app/environment";
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
-  import Nav from "./Nav.svelte";
+  import Nav from "$lib/components/Nav.svelte";
 
   export let data: LayoutData;
 

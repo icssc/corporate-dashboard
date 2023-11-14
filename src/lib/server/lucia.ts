@@ -9,7 +9,7 @@ import {
   GOOGLE_OAUTH_CLIENT_SECRET,
   GOOGLE_OAUTH_REDIRECT_URI,
 } from "$env/static/private";
-import client from "$lib/server/prisma";
+import { prisma as client } from "$lib/server/prisma";
 
 export const auth = lucia({
   adapter: prisma(client),
