@@ -5,6 +5,7 @@ import type { RequestHandler } from "./$types";
 import { ContactInput } from "$lib/schema/types";
 import { prisma } from "$lib/server/prisma";
 import { parseIntSearchParams } from "$lib/util/parseIntSearchParams";
+import {auth} from "$lib/server/lucia";
 
 const findMany = (take: number = 50, skip?: number) =>
   prisma.contact.findMany({
@@ -24,7 +25,11 @@ const findMany = (take: number = 50, skip?: number) =>
     take,
     skip,
   });
+
 export const GET: RequestHandler = async (event) => {
+  if (!(await auth.handleRequest(event).validate())) {
+    throw error(401);
+  }
   const first = parseIntSearchParams(event.url, "first");
   const skip = parseIntSearchParams(event.url, "skip");
   return json(await findMany(first, skip));
@@ -33,6 +38,9 @@ export const GET: RequestHandler = async (event) => {
 export type GetContacts = Awaited<ReturnType<typeof findMany>>;
 
 export const POST: RequestHandler = async (event) => {
+  if (!(await auth.handleRequest(event).validate())) {
+    throw error(401);
+  }
   const input = ContactInput.safeParse(event.request.json());
   if (input.success) {
     return json(
