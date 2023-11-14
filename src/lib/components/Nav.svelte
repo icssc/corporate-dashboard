@@ -1,6 +1,7 @@
 <script lang="ts">
-  import Logo from "$lib/components/Logo.svelte";
   import { Slash } from "lucide-svelte";
+
+  import Logo from "$lib/components/Logo.svelte";
 
   export let name: string | undefined;
 </script>

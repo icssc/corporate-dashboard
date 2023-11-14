@@ -1,6 +1,7 @@
 <script lang="ts">
-  import type { GetContacts } from "$api/contacts";
   import { createQuery } from "@tanstack/svelte-query";
+
+  import type { GetContacts } from "$api/contacts";
 
   const query = createQuery<GetContacts>({
     queryKey: ["repoData"],
