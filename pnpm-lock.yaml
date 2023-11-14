@@ -18,7 +18,7 @@ dependencies:
     specifier: 5.8.2
     version: 5.8.2(svelte@4.2.3)
   googleapis:
-    specifier: ^128.0.0
+    specifier: 128.0.0
     version: 128.0.0
   lucia:
     specifier: 2.7.4
