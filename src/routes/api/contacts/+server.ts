@@ -27,7 +27,8 @@ const findMany = (take: number = 50, skip?: number) =>
   });
 
 export const GET: RequestHandler = async (event) => {
-  if (!(await auth.handleRequest(event).validate())) {
+  const session = await auth.handleRequest(event).validate();
+  if (!session || session.user.role === "UNAUTHORIZED") {
     throw error(401);
   }
   const first = parseIntSearchParams(event.url, "first");
