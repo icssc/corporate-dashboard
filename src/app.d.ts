@@ -6,7 +6,10 @@ declare global {
   }
   namespace Lucia {
     type Auth = import("$lib/server/lucia").Auth;
-    type DatabaseUserAttributes = { email?: string; name?: string };
+    type DatabaseUserAttributes = {
+      role: "UNAUTHORIZED" | "MEMBER" | "ADMIN";
+      name?: string;
+    };
     type DatabaseSessionAttributes = Record<string, unknown>;
   }
 }

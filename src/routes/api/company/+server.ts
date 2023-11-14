@@ -3,7 +3,7 @@ import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 
 import { CompanyInput } from "$lib/schema/types";
-import { auth} from "$lib/server/lucia";
+import { auth } from "$lib/server/lucia";
 import { prisma } from "$lib/server/prisma";
 import { parseIntSearchParams } from "$lib/util";
 
@@ -18,7 +18,8 @@ const findMany = (take: number = 50, skip?: number) =>
     skip,
   });
 export const GET: RequestHandler = async (event) => {
-  if (!(await auth.handleRequest(event).validate())) {
+  const session = await auth.handleRequest(event).validate();
+  if (!session || session.user.role === "UNAUTHORIZED") {
     throw error(401);
   }
   const first = parseIntSearchParams(event.url, "first");
@@ -28,7 +29,8 @@ export const GET: RequestHandler = async (event) => {
 export type GetCompany = Awaited<ReturnType<typeof findMany>>;
 
 export const POST: RequestHandler = async (event) => {
-  if (!(await auth.handleRequest(event).validate())) {
+  const session = await auth.handleRequest(event).validate();
+  if (!session || session.user.role === "UNAUTHORIZED") {
     throw error(401);
   }
   const input = CompanyInput.safeParse(event.request.json());

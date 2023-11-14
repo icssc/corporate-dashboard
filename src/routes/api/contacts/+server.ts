@@ -3,9 +3,9 @@ import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 
 import { ContactInput } from "$lib/schema/types";
+import { auth } from "$lib/server/lucia";
 import { prisma } from "$lib/server/prisma";
 import { parseIntSearchParams } from "$lib/util/parseIntSearchParams";
-import {auth} from "$lib/server/lucia";
 
 const findMany = (take: number = 50, skip?: number) =>
   prisma.contact.findMany({
@@ -38,7 +38,8 @@ export const GET: RequestHandler = async (event) => {
 export type GetContacts = Awaited<ReturnType<typeof findMany>>;
 
 export const POST: RequestHandler = async (event) => {
-  if (!(await auth.handleRequest(event).validate())) {
+  const session = await auth.handleRequest(event).validate();
+  if (!session || session.user.role === "UNAUTHORIZED") {
     throw error(401);
   }
   const input = ContactInput.safeParse(event.request.json());

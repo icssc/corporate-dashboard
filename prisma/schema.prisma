@@ -10,6 +10,12 @@ datasource db {
 
 // Do not modify anything above this line unless you know what you are doing.
 
+enum UserRole {
+  UNAUTHORIZED
+  MEMBER
+  ADMIN
+}
+
 enum ContactStatus {
   NOT_CONTACTED
   INITIAL_EMAIL_SENT
@@ -25,7 +31,7 @@ model User {
   auth_session Session[]
   key          Key[]
   Contact      Contact[]
-  email        String?
+  role         UserRole  @default(UNAUTHORIZED)
   name         String?
 }
 

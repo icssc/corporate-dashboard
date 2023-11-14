@@ -5,7 +5,9 @@ import type { Actions, PageServerLoad } from "./$types";
 import { auth } from "$lib/server/lucia";
 
 export const load: PageServerLoad = async ({ locals }) => {
-  if (!(await locals.auth.validate())) throw redirect(302, "/signin");
+  const session = await locals.auth.validate();
+  if (!session) throw redirect(302, "/signin");
+  if (session.user.role === "UNAUTHORIZED") throw redirect(302, "/unauthorized");
 };
 
 export const actions: Actions = {
