@@ -15,9 +15,15 @@
     helpers: { isSelected },
   } = createCombobox<string | undefined>({
     onSelectedChange: ({ next }) => {
+      if (next?.value === null) {
+        goto("/");
+        close();
+        return undefined;
+      }
       if (next?.value) {
         goto(next.value);
         close();
+        return undefined;
       }
       return undefined;
     },
@@ -61,6 +67,18 @@
   <ul use:melt={$menu}>
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
     <div tabindex="0">
+      <li
+        use:melt={$option({
+          value: undefined,
+          label: "All Members",
+        })}
+      >
+        <span>All Members</span>
+        {#if $isSelected(undefined)}
+          <Check size="16" />
+        {/if}
+      </li>
+      <div class="line" />
       {#each filteredMembers ?? allMembers as { id, name } (id)}
         <li
           use:melt={$option({
@@ -94,9 +112,10 @@
     border-bottom: 1px solid var(--gray100);
   }
 
+  $padding: 6px;
   ul {
     margin: 0;
-    padding: 6px;
+    padding: $padding;
     flex: 1;
     overflow: auto;
 
@@ -119,5 +138,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  .line {
+    margin: 8px (-$padding);
+    border-bottom: 1px solid var(--gray100);
   }
 </style>
