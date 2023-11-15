@@ -1,11 +1,19 @@
 <script lang="ts">
   import { createQuery } from "@tanstack/svelte-query";
 
+  import type { PageData } from "./$types";
+
   import type { GetContacts } from "$api/contacts";
 
-  const query = createQuery<GetContacts>({
-    queryKey: ["repoData"],
-    queryFn: async () => await fetch("/api/contacts").then((r) => r.json()),
+  export let data: PageData;
+
+  $: contactsQuery = createQuery<GetContacts>({
+    queryKey: ["contacts", data.selectedMember],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (data.selectedMember) params.append("filter", data.selectedMember);
+      return (await fetch("/api/contacts?" + params.toString())).json();
+    },
   });
 </script>
 
@@ -18,19 +26,21 @@
         <th>Contact Email</th>
         <th>Title</th>
         <th>Status</th>
+        <th>Committee Member</th>
         <th>Last Contact Date</th>
         <th>Followup Date</th>
       </tr>
     </thead>
     <tbody>
-      {#if $query.isSuccess}
-        {#each $query.data as { id, name, email, title, status, lastContactDate, followupDate, company } (id)}
+      {#if $contactsQuery.isSuccess}
+        {#each $contactsQuery.data as { id, name, email, title, status, committeeMember, lastContactDate, followupDate, company } (id)}
           <tr>
             <td>{company.name}</td>
             <td>{name}</td>
             <td>{email ?? ""}</td>
             <td>{title ?? ""}</td>
             <td>{status}</td>
+            <td>{committeeMember?.name ?? ""}</td>
             <td>{lastContactDate ?? ""}</td>
             <td>{followupDate ?? ""}</td>
           </tr>
@@ -49,6 +59,10 @@
     text-align: left;
     min-width: 100%;
     border-spacing: 0;
+
+    tbody tr:hover {
+      background-color: var(--gray100);
+    }
 
     th,
     td {

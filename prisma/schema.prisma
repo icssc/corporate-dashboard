@@ -1,6 +1,7 @@
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native"]
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+  binaryTargets   = ["native"]
 }
 
 datasource db {
@@ -33,6 +34,8 @@ model User {
   Contact      Contact[]
   role         UserRole  @default(UNAUTHORIZED)
   name         String?
+
+  @@fulltext([name])
 }
 
 model Key {

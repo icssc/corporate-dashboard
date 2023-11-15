@@ -7,8 +7,9 @@ import { auth } from "$lib/server/lucia";
 import { prisma } from "$lib/server/prisma";
 import { parseIntSearchParams } from "$lib/util/parseIntSearchParams";
 
-const findMany = (take: number = 50, skip?: number) =>
+const findMany = (take: number = 50, skip?: number, filter?: string) =>
   prisma.contact.findMany({
+    where: { committeeMemberUserId: filter },
     select: {
       id: true,
       name: true,
@@ -18,6 +19,9 @@ const findMany = (take: number = 50, skip?: number) =>
         select: { id: true, name: true },
       },
       status: true,
+      committeeMember: {
+        select: { id: true, name: true },
+      },
       lastContactDate: true,
       followupDate: true,
       notes: true,
@@ -33,7 +37,9 @@ export const GET: RequestHandler = async (event) => {
   }
   const first = parseIntSearchParams(event.url, "first");
   const skip = parseIntSearchParams(event.url, "skip");
-  return json(await findMany(first, skip));
+  const filter = event.url.searchParams.get("filter") ?? undefined;
+
+  return json(await findMany(first, skip, filter));
 };
 
 export type GetContacts = Awaited<ReturnType<typeof findMany>>;

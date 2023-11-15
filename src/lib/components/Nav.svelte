@@ -1,6 +1,8 @@
 <script lang="ts">
   import { Slash } from "lucide-svelte";
 
+  import Selector from "./Selector.svelte";
+
   import Logo from "$lib/components/Logo.svelte";
 
   export let name: string | undefined;
@@ -15,6 +17,10 @@
       <Slash size="16" />
     </div>
     <span>Corporate Contacts</span>
+    <div class="slash">
+      <Slash size="16" />
+    </div>
+    <Selector />
   </div>
   {#if name}
     <div class="profile">
