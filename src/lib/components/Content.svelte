@@ -2,29 +2,30 @@
   import { createCombobox, melt } from "@melt-ui/svelte";
   import { createQuery } from "@tanstack/svelte-query";
   import { Check } from "lucide-svelte";
-  import { getContext } from "svelte";
-  import type { Writable } from "svelte/store";
 
   import type { GetMembers } from "$api/members";
   import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
 
   export let close: () => void;
-
-  const selected = getContext("selectedMember") as Writable<{ value: string | undefined }>;
 
   const {
     elements: { menu, input, option },
     states: { inputValue },
     helpers: { isSelected },
-  } = createCombobox({
-    selected,
+  } = createCombobox<string | undefined>({
     onSelectedChange: ({ next }) => {
-      next?.value && goto(next.value);
-      close();
-      return next;
+      if (next?.value) {
+        goto(next.value);
+        close();
+      }
+      return undefined;
     },
     forceVisible: true,
     positioning: null,
+    defaultSelected: {
+      value: $page.params.selectedMember,
+    },
   });
 
   const allMembersQuery = createQuery<GetMembers>({

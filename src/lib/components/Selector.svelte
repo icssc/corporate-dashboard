@@ -1,9 +1,18 @@
 <script lang="ts">
   import { createPopover, melt } from "@melt-ui/svelte";
+  import { createQuery } from "@tanstack/svelte-query";
   import { ChevronsUpDown } from "lucide-svelte";
   import { fade } from "svelte/transition";
 
   import Content from "./Content.svelte";
+
+  import type { GetMember } from "$api/members/[id]";
+  import { page } from "$app/stores";
+
+  $: memberQuery = createQuery<GetMember>({
+    queryKey: ["members", $page.params.selectedMember],
+    queryFn: async () => (await fetch(`/api/members/${$page.params.selectedMember}`)).json(),
+  });
 
   const {
     elements: { trigger, content },
@@ -25,12 +34,20 @@
   };
 </script>
 
-<button use:melt={$trigger} class="filter-selector" aria-label="Update dimensions">
-  <span>All Members</span>
+<button use:melt={$trigger} class="filter-selector" aria-label="Switch committee member filter">
+  {#if $page.params.selectedMember}
+    {#if $memberQuery.isSuccess}
+      <span>{$memberQuery.data?.name ?? $memberQuery.data?.id}</span>
+    {:else}
+      <div class="skeleton" />
+    {/if}
+  {:else}
+    <span>All Members</span>
+  {/if}
   <div class="icon">
     <ChevronsUpDown size="16" />
-    <!-- <span class="sr-only">Open Popover</span> -->
   </div>
+  <span class="sr-only">Open Popover</span>
 </button>
 
 {#if $open}
@@ -58,6 +75,35 @@
         background-color: var(--gray100);
       }
     }
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+    white-space: nowrap;
+  }
+
+  .skeleton {
+    height: 20px;
+    width: 128px;
+    border-radius: 4px;
+    background-color: var(--gray100);
+
+    @keyframes pulse {
+      0% {
+        background-color: var(--gray100);
+      }
+      100% {
+        background-color: var(--gray200);
+      }
+    }
+    animation: pulse 1s ease-in-out infinite alternate both;
   }
 
   .content {
