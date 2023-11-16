@@ -15,7 +15,9 @@ export const GET: RequestHandler = async ({ url, cookies, locals }) => {
     const existingUser = await getExistingUser();
     const user = existingUser
       ? existingUser
-      : await createUser({ attributes: { role: "UNAUTHORIZED", name: googleUser.name } });
+      : await createUser({
+          attributes: { role: "UNAUTHORIZED", name: googleUser.name, email: googleUser.email },
+        });
     const session = await auth.createSession({ userId: user.userId, attributes: {} });
     locals.auth.setSession(session);
     return new Response(null, { status: 302, headers: { Location: "/" } });

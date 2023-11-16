@@ -9,6 +9,7 @@ declare global {
     type DatabaseUserAttributes = {
       role: "UNAUTHORIZED" | "MEMBER" | "ADMIN";
       name?: string;
+      email?: string;
     };
     type DatabaseSessionAttributes = Record<string, unknown>;
   }

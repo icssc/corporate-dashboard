@@ -15,13 +15,14 @@ export const auth = lucia({
   adapter: prisma(client),
   env: dev ? "DEV" : "PROD",
   middleware: sveltekit(),
-  getUserAttributes: (data) => ({ role: data.role, name: data.name }),
+  getUserAttributes: ({ role, name, email }) => ({ role, name, email }),
 });
 
 export const googleAuth = google(auth, {
   clientId: GOOGLE_OAUTH_CLIENT_ID,
   clientSecret: GOOGLE_OAUTH_CLIENT_SECRET,
   redirectUri: GOOGLE_OAUTH_REDIRECT_URI,
+  scope: ["https://www.googleapis.com/auth/userinfo.email"],
 });
 
 export type Auth = typeof auth;
