@@ -4,6 +4,7 @@
   import type { PageData } from "./$types";
 
   import type { GetContacts } from "$api/contacts";
+  import Line from "$lib/components/Line.svelte";
 
   export let data: PageData;
 
@@ -29,6 +30,11 @@
         <th>Committee Member</th>
         <th>Last Contact Date</th>
         <th>Followup Date</th>
+        <div class="line-parent" aria-hidden>
+          <div class="line">
+            <Line loading={$contactsQuery.isLoading} />
+          </div>
+        </div>
       </tr>
     </thead>
     <tbody>
@@ -55,6 +61,27 @@
     overflow-x: auto;
   }
 
+  // loading line positioning
+  tr {
+    $line-height: 1px;
+    position: relative;
+
+    th {
+      border-bottom: $line-height solid var(--gray100);
+    }
+
+    .line-parent {
+      position: absolute;
+      bottom: $line-height;
+    }
+
+    .line {
+      position: fixed;
+      left: 0;
+      right: 0;
+    }
+  }
+
   table {
     text-align: left;
     min-width: 100%;
@@ -78,7 +105,6 @@
 
     th {
       border-left: 0.75px solid var(--gray100);
-      border-bottom: 1px solid var(--gray100);
     }
 
     td {

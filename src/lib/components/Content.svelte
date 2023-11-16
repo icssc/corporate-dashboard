@@ -3,6 +3,8 @@
   import { createQuery } from "@tanstack/svelte-query";
   import { Check } from "lucide-svelte";
 
+  import Line from "./Line.svelte";
+
   import type { GetMembers } from "$api/members";
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
@@ -55,15 +57,8 @@
 </script>
 
 <div class="parent">
-  <div class="relative">
-    <input
-      use:melt={$input}
-      class="input"
-      placeholder="Search members"
-      aria-label="Search members"
-    />
-  </div>
-
+  <input use:melt={$input} class="input" placeholder="Search members" aria-label="Search members" />
+  <Line loading={$filteredMembersQuery.isLoading} />
   <ul use:melt={$menu}>
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
     <div tabindex="0">
@@ -109,7 +104,6 @@
     all: unset;
     padding: 16px;
     width: 325px;
-    border-bottom: 1px solid var(--gray100);
   }
 
   $padding: 6px;
