@@ -5,7 +5,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -35,8 +35,6 @@ model User {
   role         UserRole  @default(UNAUTHORIZED)
   name         String?
   email        String?
-
-  @@fulltext([name])
 }
 
 model Key {
