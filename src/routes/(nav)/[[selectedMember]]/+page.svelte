@@ -30,6 +30,7 @@
         <th>Committee Member</th>
         <th>Last Contact Date</th>
         <th>Followup Date</th>
+        <th>Notes</th>
         <div class="line-parent" aria-hidden>
           <div class="line">
             <Line loading={$contactsQuery.isLoading} />
@@ -39,7 +40,7 @@
     </thead>
     <tbody>
       {#if $contactsQuery.isSuccess}
-        {#each $contactsQuery.data as { id, name, email, title, status, committeeMember, lastContactDate, followupDate, company } (id)}
+        {#each $contactsQuery.data as { id, name, email, title, company, status, committeeMember, lastContactDate, followupDate, notes } (id)}
           <tr>
             <td>{company.name}</td>
             <td>{name}</td>
@@ -49,6 +50,7 @@
             <td>{committeeMember?.name ?? ""}</td>
             <td>{lastContactDate ?? ""}</td>
             <td>{followupDate ?? ""}</td>
+            <td>{notes ?? ""}</td>
           </tr>
         {/each}
       {/if}
