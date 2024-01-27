@@ -4,7 +4,7 @@
   import type { PageData } from "./$types";
 
   import type { GetContacts } from "$api/contacts";
-  import Line from "$lib/components/Line.svelte";
+  import LineTableRow from "$lib/components/LineTableRow.svelte";
 
   export let data: PageData;
 
@@ -32,13 +32,7 @@
         <th>Followup Date</th>
         <th>Notes</th>
       </tr>
-      <tr aria-hidden>
-        <th class="line-parent">
-          <div class="line">
-            <Line loading={$contactsQuery.isLoading} />
-          </div>
-        </th>
-      </tr>
+      <LineTableRow loading={$contactsQuery.isLoading} />
     </thead>
     <tbody>
       {#if $contactsQuery.isSuccess}
@@ -63,25 +57,6 @@
 <style lang="scss">
   main {
     overflow-x: auto;
-  }
-
-  // loading line positioning
-  tr {
-    $line-height: 1px;
-    position: relative;
-
-    .line-parent {
-      padding: 0;
-      margin: 0;
-      position: sticky;
-      left: 0;
-      z-index: 100;
-
-      .line {
-        position: absolute;
-        width: 100vw;
-      }
-    }
   }
 
   table {
