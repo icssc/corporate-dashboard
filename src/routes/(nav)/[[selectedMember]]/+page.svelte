@@ -21,7 +21,7 @@
 <main>
   <table>
     <thead>
-      <tr>
+      <tr class="padding-left">
         <th>Company</th>
         <th>Contact Name</th>
         <th>Contact Email</th>
@@ -31,17 +31,19 @@
         <th>Last Contact Date</th>
         <th>Followup Date</th>
         <th>Notes</th>
-        <div class="line-parent" aria-hidden>
+      </tr>
+      <tr aria-hidden>
+        <th class="line-parent">
           <div class="line">
             <Line loading={$contactsQuery.isLoading} />
           </div>
-        </div>
+        </th>
       </tr>
     </thead>
     <tbody>
       {#if $contactsQuery.isSuccess}
         {#each $contactsQuery.data as { id, name, email, title, company, status, committeeMember, lastContactDate, followupDate, notes } (id)}
-          <tr>
+          <tr class="padding-left">
             <td>{company.name}</td>
             <td>{name}</td>
             <td>{email ?? ""}</td>
@@ -68,19 +70,17 @@
     $line-height: 1px;
     position: relative;
 
-    th {
-      border-bottom: $line-height solid var(--gray100);
-    }
-
     .line-parent {
-      position: absolute;
-      bottom: $line-height;
-    }
-
-    .line {
-      position: fixed;
+      padding: 0;
+      margin: 0;
+      position: sticky;
       left: 0;
-      right: 0;
+      z-index: 100;
+
+      .line {
+        position: absolute;
+        width: 100vw;
+      }
     }
   }
 
@@ -98,11 +98,11 @@
       padding: 6px 12px 6px 6px;
       white-space: nowrap;
       font-size: 14px;
+    }
 
-      &:first-child {
-        border-left: none;
-        padding-left: 16px;
-      }
+    .padding-left :first-child {
+      border-left: none;
+      padding-left: 16px;
     }
 
     th {
