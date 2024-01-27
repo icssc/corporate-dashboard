@@ -2,6 +2,7 @@
   import { createCombobox, melt } from "@melt-ui/svelte";
   import { createQuery } from "@tanstack/svelte-query";
   import { Check } from "lucide-svelte";
+  import { derived } from "svelte/store";
 
   import Line from "./Line.svelte";
 
@@ -44,14 +45,18 @@
   $: allMembers = ($allMembersQuery.isSuccess ? $allMembersQuery.data : []) as GetMembers;
   let filteredMembers = [] as GetMembers;
 
-  $: filteredMembersQuery = createQuery<GetMembers>({
-    queryKey: ["members", $inputValue],
-    queryFn: async () => {
-      const params = new URLSearchParams();
-      params.set("search", $inputValue);
-      return (await fetch("/api/members?" + params)).json();
-    },
+  const queryOptions = derived(inputValue, ($inputValue) => {
+    return {
+      queryKey: ["members", $inputValue],
+      queryFn: async () => {
+        const params = new URLSearchParams();
+        params.set("search", $inputValue);
+        return (await fetch("/api/members?" + params)).json();
+      },
+    };
   });
+
+  const filteredMembersQuery = createQuery<GetMembers>(queryOptions);
 
   $: if ($filteredMembersQuery.isSuccess === true) filteredMembers = $filteredMembersQuery.data;
 </script>

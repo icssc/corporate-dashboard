@@ -2,6 +2,7 @@
   import { createPopover, melt } from "@melt-ui/svelte";
   import { createQuery } from "@tanstack/svelte-query";
   import { ChevronsUpDown } from "lucide-svelte";
+  import { derived } from "svelte/store";
   import { fade } from "svelte/transition";
 
   import Content from "./Content.svelte";
@@ -9,10 +10,14 @@
   import type { GetMember } from "$api/members/[id]";
   import { page } from "$app/stores";
 
-  $: memberQuery = createQuery<GetMember>({
-    queryKey: ["members", $page.params.selectedMember],
-    queryFn: async () => (await fetch(`/api/members/${$page.params.selectedMember}`)).json(),
+  const queryOptions = derived(page, ($page) => {
+    return {
+      queryKey: ["members", $page.params.selectedMember],
+      queryFn: async () => (await fetch(`/api/members/${$page.params.selectedMember}`)).json(),
+    };
   });
+
+  const memberQuery = createQuery<GetMember>(queryOptions);
 
   const {
     elements: { trigger, content },
