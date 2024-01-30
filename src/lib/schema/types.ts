@@ -1,19 +1,10 @@
+import { ContactStatus, UserRole } from "@prisma/client";
 import z from "zod";
 
 export const CompanyInput = z.object({
   name: z.string(),
   url: z.string().url().optional(),
 });
-
-const ContactStatus = z.enum([
-  "NOT_CONTACTED",
-  "INITIAL_EMAIL_SENT",
-  "IN_PROGRESS_AUTOMATION_DISABLED",
-  "AUTOMATED_FOLLOWUP_SENT",
-  "BOUNCED",
-  "REJECTED",
-  "SEE_NEXT_YEAR",
-]);
 
 export const ContactInput = z.object({
   name: z.string(),
@@ -29,8 +20,12 @@ export const ContactInput = z.object({
       create: CompanyInput,
     }),
   ]),
-  status: ContactStatus,
+  status: z.nativeEnum(ContactStatus),
   lastContactDate: z.string().datetime().optional(),
   followupDate: z.string().datetime().optional(),
   notes: z.string(),
+});
+
+export const MemberInput = z.object({
+  name: z.nativeEnum(UserRole),
 });

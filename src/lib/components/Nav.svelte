@@ -3,6 +3,7 @@
 
   import Selector from "./Selector.svelte";
 
+  import { page } from "$app/stores";
   import Logo from "$lib/components/Logo.svelte";
 
   export let name: string | undefined;
@@ -17,10 +18,18 @@
       <Slash size="16" />
     </div>
     <span>Corporate Contacts</span>
-    <div class="slash">
-      <Slash size="16" />
-    </div>
-    <Selector />
+    {#if $page.route.id === "/(nav)/[[selectedMember]]"}
+      <div class="slash">
+        <Slash size="16" />
+      </div>
+      <Selector />
+    {/if}
+    {#if $page.route.id === "/(nav)/dashboard"}
+      <div class="slash">
+        <Slash size="16" />
+      </div>
+      <span>Dashboard</span>
+    {/if}
   </div>
   {#if name}
     <div class="profile">

@@ -6,6 +6,7 @@
   import { fade } from "svelte/transition";
 
   import Content from "./Content.svelte";
+  import Skeleton from "./Skeleton.svelte";
 
   import type { GetMember } from "$api/members/[id]";
   import { page } from "$app/stores";
@@ -24,7 +25,7 @@
     states: { open },
   } = createPopover({
     positioning: {
-      placement: "top-start",
+      placement: "bottom-start",
       // offset doesn't work with gutter set (default value 5)
       gutter: undefined,
       offset: {
@@ -44,7 +45,7 @@
     {#if $memberQuery.isSuccess}
       <span>{$memberQuery.data?.name ?? $memberQuery.data?.id}</span>
     {:else}
-      <div class="skeleton" />
+      <Skeleton />
     {/if}
   {:else}
     <span>All Members</span>
@@ -92,23 +93,6 @@
     clip: rect(0, 0, 0, 0);
     border: 0;
     white-space: nowrap;
-  }
-
-  .skeleton {
-    height: 20px;
-    width: 128px;
-    border-radius: 4px;
-    background-color: var(--gray100);
-
-    @keyframes pulse {
-      0% {
-        background-color: var(--gray100);
-      }
-      100% {
-        background-color: var(--gray200);
-      }
-    }
-    animation: pulse 1s ease-in-out infinite alternate both;
   }
 
   .content {
