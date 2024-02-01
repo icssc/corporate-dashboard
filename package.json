@@ -38,6 +38,7 @@
     "@playwright/test": "1.39.0",
     "@sveltejs/adapter-auto": "2.1.1",
     "@sveltejs/kit": "1.27.5",
+    "@tanstack/svelte-table": "8.11.7",
     "@tsconfig/node18": "18.2.2",
     "@types/aws-lambda": "8.10.126",
     "@types/lint-staged": "13.2.2",

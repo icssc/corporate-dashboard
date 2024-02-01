@@ -1,5 +1,14 @@
 <script lang="ts">
   import { createQuery } from "@tanstack/svelte-query";
+  import {
+    createSvelteTable,
+    getCoreRowModel,
+    getSortedRowModel,
+    flexRender,
+    createColumnHelper,
+  } from "@tanstack/svelte-table";
+  import type { SortingState, TableOptions } from "@tanstack/svelte-table";
+  import { writable } from "svelte/store";
 
   import type { PageData } from "./$types";
 
@@ -8,48 +17,126 @@
 
   export let data: PageData;
 
+  let sorting = [] as SortingState;
+  const columnHelper = createColumnHelper<GetContacts[0]>();
+  const options = writable<TableOptions<GetContacts[0]>>({
+    data: [],
+    columns: [
+      columnHelper.accessor("company.name", {
+        header: "Company",
+      }),
+      columnHelper.accessor("name", {
+        header: "Contact Name",
+      }),
+      columnHelper.accessor("email", {
+        header: "Contact Email",
+      }),
+      columnHelper.accessor("title", {
+        header: "Title",
+      }),
+      columnHelper.accessor("status", {
+        header: "Status",
+      }),
+      columnHelper.accessor("committeeMember", {
+        header: "Committee Member",
+      }),
+      columnHelper.accessor("lastContactDate", {
+        header: "Last Contact Date",
+      }),
+      columnHelper.accessor("followupDate", {
+        header: "Followup Date",
+      }),
+      columnHelper.accessor("notes", {
+        header: "Notes",
+      }),
+    ],
+    state: {
+      sorting,
+    },
+    onSortingChange: (updater) => {
+      if (updater instanceof Function) {
+        sorting = updater(sorting);
+      } else {
+        sorting = updater;
+      }
+
+      options.update((old) => ({
+        ...old,
+        state: {
+          ...old.state,
+          sorting,
+        },
+      }));
+    },
+    manualSorting: true,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  });
+
+  const table = createSvelteTable(options);
+
   $: contactsQuery = createQuery<GetContacts>({
     queryKey: ["contacts", data.selectedMember],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (data.selectedMember) params.append("filter", data.selectedMember);
+      if (sorting[0]) params.append("sorting", JSON.stringify(sorting));
       return (await fetch("/api/contacts?" + params.toString())).json();
     },
   });
+
+  $: (() => {
+    const data = $contactsQuery.data;
+
+    if (data) {
+      options.update((options) => ({
+        ...options,
+        data,
+      }));
+    }
+  })();
 </script>
 
 <main>
   <table>
     <thead>
-      <tr class="padding-left">
-        <th>Company</th>
-        <th>Contact Name</th>
-        <th>Contact Email</th>
-        <th>Title</th>
-        <th>Status</th>
-        <th>Committee Member</th>
-        <th>Last Contact Date</th>
-        <th>Followup Date</th>
-        <th>Notes</th>
-      </tr>
+      {#each $table.getHeaderGroups() as headerGroup}
+        <tr>
+          {#each headerGroup.headers as header, i}
+            <th colSpan={header.colSpan} class:padding-left={i === 0}>
+              {#if !header.isPlaceholder}
+                <button
+                  class="sort-button"
+                  class:cursor-pointer={header.column.getCanSort()}
+                  class:select-none={header.column.getCanSort()}
+                  on:click={header.column.getToggleSortingHandler()}
+                >
+                  <svelte:component
+                    this={flexRender(header.column.columnDef.header, header.getContext())}
+                  />
+                  {#if header.column.getIsSorted() === "asc"}
+                    🔼
+                  {:else if header.column.getIsSorted() === "desc"}
+                    🔽
+                  {/if}
+                </button>
+              {/if}
+            </th>
+          {/each}
+        </tr>
+      {/each}
       <LineTableRow loading={$contactsQuery.isLoading} />
     </thead>
     <tbody>
-      {#if $contactsQuery.isSuccess}
-        {#each $contactsQuery.data as { id, name, email, title, company, status, committeeMember, lastContactDate, followupDate, notes } (id)}
-          <tr class="padding-left">
-            <td>{company.name}</td>
-            <td>{name}</td>
-            <td>{email ?? ""}</td>
-            <td>{title ?? ""}</td>
-            <td>{status}</td>
-            <td>{committeeMember?.name ?? ""}</td>
-            <td>{lastContactDate ?? ""}</td>
-            <td>{followupDate ?? ""}</td>
-            <td>{notes ?? ""}</td>
-          </tr>
-        {/each}
-      {/if}
+      {#each $table.getRowModel().rows.slice(0, 10) as row}
+        <tr>
+          {#each row.getVisibleCells() as cell, i}
+            <td class:padding-left={i === 0}>
+              <svelte:component this={flexRender(cell.column.columnDef.cell, cell.getContext())} />
+            </td>
+          {/each}
+        </tr>
+      {/each}
     </tbody>
   </table>
 </main>
@@ -75,13 +162,25 @@
       font-size: 14px;
     }
 
-    .padding-left :first-child {
+    .padding-left {
       border-left: none;
       padding-left: 16px;
     }
 
     th {
       border-left: 0.75px solid var(--gray100);
+
+      .sort-button {
+        all: unset;
+
+        &.cursor-pointer {
+          cursor: pointer;
+        }
+
+        &.select-none {
+          user-select: none;
+        }
+      }
     }
 
     td {

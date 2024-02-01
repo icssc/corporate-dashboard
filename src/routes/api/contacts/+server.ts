@@ -1,4 +1,6 @@
 import { error, json } from "@sveltejs/kit";
+import type { SortingState } from "@tanstack/svelte-table";
+import z from "zod";
 
 import type { RequestHandler } from "./$types";
 
@@ -7,7 +9,7 @@ import { auth } from "$lib/server/lucia";
 import { prisma } from "$lib/server/prisma";
 import { parseIntSearchParams } from "$lib/util/parseIntSearchParams";
 
-const findMany = (take: number = 50, skip?: number, filter?: string) =>
+const findMany = (take: number = 50, skip?: number, filter?: string, sorting?: SortingState) =>
   prisma.contact.findMany({
     where: { committeeMemberUserId: filter },
     select: {
@@ -28,7 +30,19 @@ const findMany = (take: number = 50, skip?: number, filter?: string) =>
     },
     take,
     skip,
+    ...(sorting && {
+      orderBy: {
+        [sorting[0].id]: sorting[0].desc ? "desc" : "asc",
+      },
+    }),
   });
+
+const SortingState = z.array(
+  z.object({
+    desc: z.boolean(),
+    id: z.string(),
+  }),
+);
 
 export const GET: RequestHandler = async (event) => {
   const session = await auth.handleRequest(event).validate();
@@ -38,8 +52,16 @@ export const GET: RequestHandler = async (event) => {
   const first = parseIntSearchParams(event.url, "first");
   const skip = parseIntSearchParams(event.url, "skip");
   const filter = event.url.searchParams.get("filter") ?? undefined;
+  const sorting = event.url.searchParams.get("sorting") ?? undefined;
 
-  return json(await findMany(first, skip, filter));
+  return json(
+    await findMany(
+      first,
+      skip,
+      filter,
+      sorting ? SortingState.parse(JSON.parse(sorting)) : undefined,
+    ),
+  );
 };
 
 export type GetContacts = Awaited<ReturnType<typeof findMany>>;
