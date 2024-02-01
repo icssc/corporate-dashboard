@@ -8,6 +8,7 @@
     createColumnHelper,
   } from "@tanstack/svelte-table";
   import type { SortingState, TableOptions } from "@tanstack/svelte-table";
+  import { CheckSquare, Square } from "lucide-svelte";
   import { writable } from "svelte/store";
 
   import type { PageData } from "./$types";
@@ -69,6 +70,7 @@
       }));
     },
     manualSorting: true,
+    enableMultiRowSelection: true,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
@@ -102,8 +104,21 @@
     <thead>
       {#each $table.getHeaderGroups() as headerGroup}
         <tr>
-          {#each headerGroup.headers as header, i}
-            <th colSpan={header.colSpan} class:padding-left={i === 0}>
+          <th class="padding-left">
+            <button
+              on:click={() => {
+                $table.toggleAllPageRowsSelected();
+              }}
+            >
+              {#if $table.getIsAllPageRowsSelected()}
+                <CheckSquare />
+              {:else}
+                <Square />
+              {/if}
+            </button>
+          </th>
+          {#each headerGroup.headers as header}
+            <th colSpan={header.colSpan}>
               {#if !header.isPlaceholder}
                 <button
                   class="sort-button"
@@ -129,9 +144,22 @@
     </thead>
     <tbody>
       {#each $table.getRowModel().rows.slice(0, 10) as row}
-        <tr>
-          {#each row.getVisibleCells() as cell, i}
-            <td class:padding-left={i === 0}>
+        <tr class:selected={row.getIsSelected()}>
+          <th class="padding-left">
+            <button
+              on:click={() => {
+                row.toggleSelected();
+              }}
+            >
+              {#if row.getIsSelected()}
+                <CheckSquare />
+              {:else}
+                <Square />
+              {/if}
+            </button>
+          </th>
+          {#each row.getVisibleCells() as cell}
+            <td>
               <svelte:component this={flexRender(cell.column.columnDef.cell, cell.getContext())} />
             </td>
           {/each}
