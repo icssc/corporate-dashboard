@@ -8,8 +8,6 @@
   import { page } from "$app/stores";
   import Line from "$lib/components/Line.svelte";
 
-  export let close: () => void;
-
   const {
     elements: { menu, input, option },
     states: { inputValue },
@@ -18,7 +16,6 @@
     onSelectedChange: ({ next }) => {
       if (next?.value) {
         goto(next.value);
-        close();
         return undefined;
       }
       return undefined;

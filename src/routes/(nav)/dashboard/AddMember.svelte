@@ -1,31 +1,18 @@
 <script lang="ts">
-  import { createDialog, melt } from "@melt-ui/svelte";
+  import { melt } from "@melt-ui/svelte";
   import { PlusCircle } from "lucide-svelte";
-  import { fade } from "svelte/transition";
 
   import Content from "./Content.svelte";
 
-  const {
-    elements: { trigger, overlay, content, title, portalled },
-    states: { open },
-  } = createDialog({});
+  import Dialog from "$lib/components/Dialog.svelte";
 </script>
 
-<button use:melt={$trigger}><PlusCircle size={14} /><span>Add Member</span></button>
-
-<div use:melt={$portalled}>
-  {#if $open}
-    <div use:melt={$overlay} class="" transition:fade={{ duration: 150 }} />
-    <div use:melt={$content} transition:fade={{ duration: 100 }} class="content">
-      <h2 use:melt={$title}>Add Member</h2>
-      <Content
-        close={() => {
-          $open = false;
-        }}
-      />
-    </div>
-  {/if}
-</div>
+<Dialog title="Add Member">
+  <button let:trigger use:melt={trigger} slot="trigger">
+    <PlusCircle size={14} /><span>Add Member</span>
+  </button>
+  <Content />
+</Dialog>
 
 <style lang="scss">
   button {
@@ -46,29 +33,6 @@
     &:hover {
       border: 1px solid var(--gray300);
       transform: scale(1.015);
-    }
-  }
-
-  .content {
-    display: flex;
-    flex-direction: column;
-    z-index: 1000;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 512px;
-    max-height: 100%;
-    height: 512px;
-    width: 100%;
-    border-radius: 12px;
-    border: 1px solid var(--gray100);
-    background-color: var(--background);
-
-    h2 {
-      font-size: 20px;
-      font-weight: 500;
-      margin: 24px 16px 0 16px;
     }
   }
 </style>
