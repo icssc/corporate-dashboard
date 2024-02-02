@@ -15,24 +15,9 @@
 </Dialog>
 
 <style lang="scss">
-  button {
-    all: unset;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    border-radius: 6px;
-    background-color: var(--gray100);
-    border: 1px solid var(--gray200);
-    padding: 6px 12px;
-    transform: scale(1);
-    transition:
-      transform 250ms cubic-bezier(0.76, 0, 0.24, 1),
-      border 250ms cubic-bezier(0.76, 0, 0.24, 1);
+  @use "$lib/styles/button" as button;
 
-    &:hover {
-      border: 1px solid var(--gray300);
-      transform: scale(1.015);
-    }
+  button {
+    @include button.button;
   }
 </style>
