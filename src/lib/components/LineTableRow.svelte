@@ -13,8 +13,11 @@
 </tr>
 
 <style lang="scss">
+  $height: 1px;
+
   tr {
     position: relative;
+    height: $height;
 
     .line-parent {
       padding: 0;
@@ -22,6 +25,7 @@
       position: sticky;
       left: 0;
       z-index: 100;
+      bottom: $height;
 
       .line {
         position: absolute;
