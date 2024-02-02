@@ -7,7 +7,7 @@
     flexRender,
     createColumnHelper,
   } from "@tanstack/svelte-table";
-  import type { SortingState, TableOptions } from "@tanstack/svelte-table";
+  import type { SortingState, RowSelectionState, TableOptions } from "@tanstack/svelte-table";
   import { CheckSquare, Square } from "lucide-svelte";
   import { writable } from "svelte/store";
 
@@ -19,9 +19,11 @@
   export let data: PageData;
 
   let sorting = [] as SortingState;
+  let rowSelection = {} as RowSelectionState;
   const columnHelper = createColumnHelper<GetContacts[0]>();
   const options = writable<TableOptions<GetContacts[0]>>({
     data: [],
+    getRowId: (row) => row.id,
     columns: [
       columnHelper.accessor("company.name", {
         header: "Company",
@@ -53,6 +55,7 @@
     ],
     state: {
       sorting,
+      rowSelection,
     },
     onSortingChange: (updater) => {
       if (updater instanceof Function) {
@@ -71,6 +74,21 @@
     },
     manualSorting: true,
     enableMultiRowSelection: true,
+    onRowSelectionChange: (updater) => {
+      if (updater instanceof Function) {
+        rowSelection = updater(rowSelection);
+      } else {
+        rowSelection = updater;
+      }
+
+      options.update((old) => ({
+        ...old,
+        state: {
+          ...old.state,
+          rowSelection,
+        },
+      }));
+    },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
