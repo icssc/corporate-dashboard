@@ -15,6 +15,7 @@
 
   import type { GetContacts } from "$api/contacts";
   import LineTableRow from "$lib/components/LineTableRow.svelte";
+  import { formatDateToPST } from "$lib/util/formatDateToPST";
 
   export let data: PageData;
 
@@ -45,9 +46,11 @@
       }),
       columnHelper.accessor("lastContactDate", {
         header: "Last Contact Date",
+        cell: (props) => formatDateToPST(props.getValue()),
       }),
       columnHelper.accessor("followupDate", {
         header: "Followup Date",
+        cell: (props) => formatDateToPST(props.getValue()),
       }),
       columnHelper.accessor("notes", {
         header: "Notes",
