@@ -1,0 +1,59 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/github-workflow.json
+---
+on:
+  pull_request:
+    types:
+      - closed
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+  deployments: write
+  repository-projects: write
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+jobs:
+  deploy:
+    name: Destroy staging
+    runs-on: "ubuntu-latest"
+    environment:
+      name: Staging \#${{ github.event.pull_request.number }}
+      url: https://staging-${{ github.event.pull_request.number }}-corporate.internal.icssc.club
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/hydrogen
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+      - name: Setup pnpm cache
+        uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-store-
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Destroy app
+        run: pnpm sst remove --stage staging-${{ github.event.pull_request.number }}
+      - name: Set API staging environment to inactive
+        uses: strumwolf/delete-deployment-environment@195215d2c5602aee6fb4b9cf0853970decca9e7a # v2.3.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          environment: Staging \#${{ github.event.pull_request.number }}
+          onlyDeactivateDeployments: true
