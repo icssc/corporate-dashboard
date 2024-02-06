@@ -17,6 +17,11 @@ concurrency:
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
+  GOOGLE_OAUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
+  MAILER_REFRESH_TOKEN: ${{ secrets.MAILER_REFRESH_TOKEN }}
+  STAGE: staging-${{ github.event.pull_request.number }}
 jobs:
   deploy:
     name: Deploy to staging
@@ -51,4 +56,4 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Deploy app
-        run: pnpm sst deploy --stage staging-${{ github.event.pull_request.number }}
+        run: pnpm sst deploy --stage $STAGE
