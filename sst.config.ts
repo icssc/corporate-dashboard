@@ -1,5 +1,5 @@
 import type { SSTConfig } from "sst";
-import { Cron, SvelteKitSite } from "sst/constructs";
+import { SvelteKitSite } from "sst/constructs";
 
 export default {
   config(_input) {
@@ -17,13 +17,6 @@ export default {
             : `staging-${stack.stage}-corporate.internal.icssc.club`,
       });
       stack.addOutputs({ url: site.url });
-      if (app.stage === "prod") {
-        new Cron(stack, "send-followup", {
-          schedule: "rate(1 day)",
-          job: "services/src/send-followup.handler",
-          enabled: !app.local,
-        });
-      }
     });
     if (app.stage !== "prod") {
       app.setDefaultRemovalPolicy("destroy");
