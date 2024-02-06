@@ -11,10 +11,13 @@ export default {
   stacks(app) {
     app.stack(function Site({ stack }) {
       const site = new SvelteKitSite(stack, "site", {
-        customDomain:
-          stack.stage === "prod"
-            ? "corporate.internal.icssc.club"
-            : `staging-${stack.stage}-corporate.internal.icssc.club`,
+        customDomain: {
+          domainName:
+            stack.stage === "prod"
+              ? "corporate.internal.icssc.club"
+              : `${stack.stage}-corporate.internal.icssc.club`,
+          hostedZone: "icssc.club",
+        },
       });
       stack.addOutputs({ url: site.url });
     });
