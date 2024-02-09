@@ -15,8 +15,13 @@
     transform 250ms cubic-bezier(0.76, 0, 0.24, 1),
     border 250ms cubic-bezier(0.76, 0, 0.24, 1);
 
-  &:hover {
+  // TODO: Check browser compatibility
+  &:hover:not(:disabled) {
     border: 1px solid var(--gray300);
     transform: scale(1.015);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
   }
 }
