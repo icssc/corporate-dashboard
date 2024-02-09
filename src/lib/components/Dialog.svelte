@@ -17,11 +17,21 @@
   {#if $open}
     <div use:melt={$overlay} class="overlay" transition:fade={{ duration: 150 }} />
     <div use:melt={$content} transition:fade={{ duration: 100 }} class="content">
-      <h2 use:melt={$titleElement}>{title}</h2>
-      <slot />
-      <button use:melt={$close} aria-label="close" class="close">
-        <X size={16} strokeWidth={4} />
-      </button>
+      <div class="top">
+        <h2 use:melt={$titleElement}>{title}</h2>
+        <button use:melt={$close} aria-label="close" class="close">
+          <X size={16} strokeWidth={4} />
+        </button>
+        <p class="tooltip">
+          <slot name="tooltip" />
+        </p>
+      </div>
+      <div class="middle">
+        <slot />
+      </div>
+      <div class="bottom">
+        <slot name="bottom" />
+      </div>
     </div>
   {/if}
 </div>
@@ -48,7 +58,29 @@
     h2 {
       font-size: 20px;
       font-weight: 500;
-      margin: 24px 16px 0 16px;
+      margin: 24px 16px;
+    }
+
+    .top {
+      border-bottom: 1px solid var(--gray100);
+
+      .tooltip {
+        font-size: 14px;
+        line-height: 20px;
+        margin: 16px;
+        overflow-wrap: break-word;
+
+        :global(a) {
+          color: var(--pink400);
+        }
+      }
+    }
+
+    .middle {
+      overflow-y: auto;
+    }
+
+    .bottom {
     }
 
     .close {

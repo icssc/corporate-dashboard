@@ -8,6 +8,11 @@
 </script>
 
 <Dialog title="Add Member">
+  <svelte:fragment slot="tooltip">
+    Members must sign up by visiting
+    <a href="https://corporate.internal.icssc.club">https://corporate.internal.icssc.club</a>
+    before they're discoverable.
+  </svelte:fragment>
   <button let:trigger use:melt={trigger} slot="trigger">
     <PlusCircle size={14} /><span>Add Member</span>
   </button>

@@ -47,13 +47,10 @@
   $: if ($filteredMembersQuery.isSuccess === true) filteredMembers = $filteredMembersQuery.data;
 </script>
 
-<p class="tooltip">
-  Members must sign up by visiting
-  <a href="https://corporate.internal.icssc.club">https://corporate.internal.icssc.club</a>
-  before they're discoverable.
-</p>
-<input use:melt={$input} class="input" placeholder="Search members" aria-label="Search members" />
-<Line loading={$filteredMembersQuery.isLoading} />
+<div class="sticky">
+  <input use:melt={$input} class="input" placeholder="Search members" aria-label="Search members" />
+  <Line loading={$filteredMembersQuery.isLoading} />
+</div>
 <ul use:melt={$menu}>
   <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
   <div tabindex="0">
@@ -76,17 +73,9 @@
 </ul>
 
 <style lang="scss">
-  .tooltip {
-    font-size: 14px;
-    line-height: 20px;
-    margin: 0;
-    padding: 16px;
-    border-bottom: 1px solid var(--gray100);
-    overflow-wrap: break-word;
-
-    a {
-      color: var(--pink400);
-    }
+  .sticky {
+    position: sticky;
+    top: 0;
   }
 
   .input {
@@ -96,6 +85,7 @@
     min-width: 325px;
     width: 100%;
     box-sizing: border-box;
+    background-color: var(--background);
   }
 
   $padding: 6px;
