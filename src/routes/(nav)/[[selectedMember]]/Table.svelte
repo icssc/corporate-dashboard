@@ -12,6 +12,7 @@
   import { writable } from "svelte/store";
 
   import type { GetContacts } from "$api/contacts";
+  import Drawer from "$lib/components/Drawer.svelte";
   import { page } from "$app/stores";
   import LineTableRow from "$lib/components/LineTableRow.svelte";
   import { formatDateToPST } from "$lib/util/formatDateToPST";
@@ -179,7 +180,14 @@
         </th>
         {#each row.getVisibleCells() as cell}
           <td>
-            <svelte:component this={flexRender(cell.column.columnDef.cell, cell.getContext())} />
+            {#if cell.column.id === "notes"}
+              <Drawer
+                dialogTitle="Notes"
+                dialogContent={cell.getValue() ? String(cell.getValue()) : "No notes provided."}
+              />
+            {:else}
+              <svelte:component this={flexRender(cell.column.columnDef.cell, cell.getContext())} />
+            {/if}
           </td>
         {/each}
       </tr>
