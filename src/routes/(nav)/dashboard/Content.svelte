@@ -91,6 +91,7 @@
 
   .input {
     all: unset;
+    cursor: text;
     padding: 16px;
     min-width: 325px;
     width: 100%;
