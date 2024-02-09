@@ -14,7 +14,7 @@
 
 <div use:melt={$portalled}>
   {#if $open}
-    <div use:melt={$overlay} class="" transition:fade={{ duration: 150 }} />
+    <div use:melt={$overlay} class="overlay" transition:fade={{ duration: 150 }} />
     <div use:melt={$content} transition:fade={{ duration: 100 }} class="content">
       <h2 use:melt={$titleElement}>{title}</h2>
       <slot />
@@ -44,5 +44,11 @@
       font-weight: 500;
       margin: 24px 16px 0 16px;
     }
+  }
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.7);
   }
 </style>
