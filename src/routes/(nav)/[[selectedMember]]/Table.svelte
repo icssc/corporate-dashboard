@@ -12,8 +12,8 @@
   import { writable } from "svelte/store";
 
   import type { GetContacts } from "$api/contacts";
-  import Drawer from "$lib/components/Drawer.svelte";
   import { page } from "$app/stores";
+  import Drawer from "$lib/components/Drawer.svelte";
   import LineTableRow from "$lib/components/LineTableRow.svelte";
   import { formatDateToPST } from "$lib/util/formatDateToPST";
 
@@ -182,6 +182,7 @@
           <td>
             {#if cell.column.id === "notes"}
               <Drawer
+                side="right"
                 dialogTitle="Notes"
                 dialogContent={cell.getValue() ? String(cell.getValue()) : "No notes provided."}
               />
