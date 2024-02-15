@@ -230,5 +230,13 @@
       border-left: $border;
       border-bottom: $border;
     }
+
+    .selected {
+      background-color: var(--pink300);
+
+      &:hover {
+        background-color: var(--pink200);
+      }
+    }
   }
 </style>
