@@ -1,11 +1,12 @@
 <script lang="ts">
   import { createDialog, melt } from "@melt-ui/svelte";
+  import { X } from "lucide-svelte";
   import { fade } from "svelte/transition";
 
   export let title: string;
 
   const {
-    elements: { trigger, overlay, content, title: titleElement, portalled },
+    elements: { trigger, overlay, content, title: titleElement, close, portalled },
     states: { open },
   } = createDialog({});
 </script>
@@ -18,11 +19,16 @@
     <div use:melt={$content} transition:fade={{ duration: 100 }} class="content">
       <h2 use:melt={$titleElement}>{title}</h2>
       <slot />
+      <button use:melt={$close} aria-label="close" class="close">
+        <X size={16} strokeWidth={4} />
+      </button>
     </div>
   {/if}
 </div>
 
 <style lang="scss">
+  @use "$lib/styles/button" as button;
+
   .content {
     display: flex;
     flex-direction: column;
@@ -43,6 +49,13 @@
       font-size: 20px;
       font-weight: 500;
       margin: 24px 16px 0 16px;
+    }
+
+    .close {
+      @include button.button;
+      position: fixed;
+      top: 16px;
+      right: 16px;
     }
   }
 
