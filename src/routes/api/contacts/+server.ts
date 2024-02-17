@@ -74,7 +74,7 @@ export const POST: RequestHandler = async (event) => {
   const input = ContactInput.safeParse(event.request.json());
   if (input.success) {
     return json(
-      prisma.contact.create({
+      await prisma.contact.create({
         data: input.data,
       }),
     );
