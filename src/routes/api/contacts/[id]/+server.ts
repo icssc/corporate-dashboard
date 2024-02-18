@@ -23,7 +23,7 @@ export const PATCH: RequestHandler = async (event) => {
 
 export const DELETE: RequestHandler = async (event) => {
   const session = await auth.handleRequest(event).validate();
-  if (session?.user?.role !== "ADMIN") {
+  if (!session || session.user.role === "UNAUTHORIZED") {
     throw error(401);
   }
   return json(await prisma.contact.delete({ where: { id: event.params.id } }));
