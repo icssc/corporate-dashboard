@@ -12,10 +12,11 @@
   export let data: PageData;
 
   $: membersQuery = createQuery<GetMembers>({
-    queryKey: ["members", data.selectedMember],
+    queryKey: ["members"],
     queryFn: async () => {
       return (await fetch("/api/members")).json();
     },
+    refetchInterval: 2500,
   });
   $: membersCountAdminQuery = createQuery<GetMembersCount>({
     queryKey: ["members-count", "ADMIN"],
@@ -81,7 +82,6 @@
     </table>
   </div>
   <div class="actions">
-    <AddMember />
     <AddMember />
   </div>
 </main>

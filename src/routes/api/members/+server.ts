@@ -42,7 +42,9 @@ export const GET: RequestHandler = async (event) => {
   const search = event.url.searchParams.get("search") ?? undefined;
   const role = event.url.searchParams.get("role") ?? undefined;
 
-  return json(await findMany(first, skip, search, UserRoleZod.parse(role)));
+  return json(
+    await findMany(first, skip, search, role ? UserRoleZod.parse(JSON.parse(role)) : undefined),
+  );
 };
 
 export type GetMembers = Awaited<ReturnType<typeof findMany>>;

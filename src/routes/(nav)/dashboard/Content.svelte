@@ -4,9 +4,10 @@
   import { Check } from "lucide-svelte";
 
   import type { GetMembers } from "$api/members";
-  import { goto } from "$app/navigation";
   import { page } from "$app/stores";
   import Line from "$lib/components/Line.svelte";
+
+  export let selectedUser: string | undefined;
 
   const {
     elements: { menu, input, option },
@@ -14,11 +15,8 @@
     helpers: { isSelected },
   } = createCombobox<string | undefined>({
     onSelectedChange: ({ next }) => {
-      if (next?.value) {
-        goto(next.value);
-        return undefined;
-      }
-      return undefined;
+      selectedUser = next?.value;
+      return next;
     },
     forceVisible: true,
     positioning: null,
@@ -28,18 +26,25 @@
   });
 
   const allMembersQuery = createQuery<GetMembers>({
-    queryKey: ["members"],
-    queryFn: async () => await fetch("/api/members").then((r) => r.json()),
+    queryKey: ["members", "UNAUTHORIZED"],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      params.set("role", JSON.stringify(["UNAUTHORIZED"]));
+
+      return (await fetch("/api/members?" + params)).json();
+    },
   });
 
   $: allMembers = ($allMembersQuery.isSuccess ? $allMembersQuery.data : []) as GetMembers;
   let filteredMembers = [] as GetMembers;
 
   $: filteredMembersQuery = createQuery<GetMembers>({
-    queryKey: ["members", $inputValue],
+    queryKey: ["members", "UNAUTHORIZED", $inputValue],
     queryFn: async () => {
       const params = new URLSearchParams();
+      params.set("role", JSON.stringify(["UNAUTHORIZED"]));
       params.set("search", $inputValue);
+
       return (await fetch("/api/members?" + params)).json();
     },
   });
@@ -48,7 +53,7 @@
 </script>
 
 <div class="sticky">
-  <input use:melt={$input} class="input" placeholder="Search members" aria-label="Search members" />
+  <input use:melt={$input} class="input" placeholder="Search users" aria-label="Search users" />
   <Line loading={$filteredMembersQuery.isLoading} />
 </div>
 <ul use:melt={$menu}>
@@ -67,7 +72,7 @@
         {/if}
       </li>
     {:else}
-      <li>No members found</li>
+      <li>No non-member users found</li>
     {/each}
   </div>
 </ul>

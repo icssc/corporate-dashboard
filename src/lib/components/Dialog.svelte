@@ -4,6 +4,9 @@
   import { fade } from "svelte/transition";
 
   export let title: string;
+  export const closeDialog = () => {
+    $open = false;
+  };
 
   const {
     elements: { trigger, overlay, content, title: titleElement, close, portalled },
@@ -82,6 +85,7 @@
 
     .bottom {
       border-top: 1px solid var(--gray100);
+      margin-top: auto;
       padding: 16px;
     }
 

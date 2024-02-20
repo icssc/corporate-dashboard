@@ -1,5 +1,5 @@
 import { error, json } from "@sveltejs/kit";
-import z from "zod";
+import type z from "zod";
 
 import type { RequestHandler } from "./$types";
 
@@ -45,10 +45,9 @@ export const PUT: RequestHandler = async (event) => {
   }
 
   const id = event.params.id;
-  const data = event.url.searchParams.get("data") ?? undefined;
-  const dataJson = data ? JSON.parse(data) : undefined;
 
-  return json(await update(id, MemberInput.parse(dataJson)));
+  const data = await event.request.json();
+  return json(await update(id, MemberInput.parse(data)));
 };
 
 export type PutMember = Awaited<ReturnType<typeof update>>;

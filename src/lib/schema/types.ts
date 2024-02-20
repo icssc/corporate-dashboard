@@ -27,5 +27,5 @@ export const ContactInput = z.object({
 });
 
 export const MemberInput = z.object({
-  name: z.nativeEnum(UserRole),
+  role: z.nativeEnum(UserRole),
 });
