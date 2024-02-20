@@ -1,5 +1,5 @@
 <script lang="ts">
-  import IcsscLogo from "./ICSSCLogo.svelte";
+  import IcsscLogo from "$lib/components/ICSSCLogo.svelte";
 </script>
 
 <main>
