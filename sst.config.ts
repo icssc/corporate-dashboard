@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { readFileSync } from "node:fs";
 
 import { RemovalPolicy } from "aws-cdk-lib";
 import { AssetHashType, IgnoreMode } from "aws-cdk-lib";
@@ -134,7 +135,8 @@ export default {
         const prismaLayer = new PrismaLayer(stack, "PrismaLayer", {
           description: "Prisma engine and library",
           layerVersionName: app.logicalPrefixedName("prisma"),
-          prismaVersion: PRISMA_VERSION,
+          prismaVersion: JSON.parse(readFileSync("./package.json", { encoding: "utf8" }))
+            .devDependencies.prisma,
 
           // retain for rollbacks
           removalPolicy: RemovalPolicy.RETAIN,
