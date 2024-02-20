@@ -81,6 +81,8 @@
     }
 
     .bottom {
+      border-top: 1px solid var(--gray100);
+      padding: 16px;
     }
 
     .close {
