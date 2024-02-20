@@ -1,5 +1,5 @@
 import { error, json } from "@sveltejs/kit";
-import { createMimeMessage, Mailbox } from "mimetext";
+import { createMimeMessage } from "mimetext";
 
 import type { RequestHandler } from "./$types";
 
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async (event) => {
     ({ attachments, htmlBody, plaintextBody, recipient, replyTo, subject }) => {
       const msg = createMimeMessage();
       msg.setSender({ name: "ICS Student Council", addr: "icssc@uci.edu" });
-      msg.setHeader("Reply-To", new Mailbox(replyTo));
+      msg.setHeader("Reply-To", { addr: replyTo });
       msg.setRecipient(recipient);
       msg.setSubject(subject);
       msg.addMessage({ contentType: "text/plain", data: plaintextBody });
@@ -65,5 +65,5 @@ export const POST: RequestHandler = async (event) => {
     await gmail.users.messages.send({ userId: "me", requestBody });
     await sleep(1000);
   }
-  return json(results);
+  return json({});
 };
