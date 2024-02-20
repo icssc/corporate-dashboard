@@ -3,7 +3,7 @@
 </script>
 
 <button disabled>
-  <PlusCircle size={14} /><span>Bulk Add Member</span>
+  <PlusCircle size={14} /><span>Bulk Add Contact</span>
 </button>
 
 <style lang="scss">
