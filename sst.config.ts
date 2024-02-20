@@ -1,32 +1,8 @@
-import crypto from "node:crypto";
-import { readFileSync } from "node:fs";
-
 import { RemovalPolicy } from "aws-cdk-lib";
-import { AssetHashType, IgnoreMode } from "aws-cdk-lib";
-import { Code, LayerVersion, LayerVersionProps, Runtime } from "aws-cdk-lib/aws-lambda";
-import { Construct } from "constructs";
 import type { SSTConfig } from "sst";
-import { App } from "sst/constructs";
 import { StackContext, SvelteKitSite } from "sst/constructs";
 
-const PRISMA_LAYER_EXTERNAL = ["@prisma/engines", "@prisma/engines-version", "@prisma/internals"];
-
-type PrismaEngine = "introspection-engine" | "schema-engine" | "prisma-fmt" | "libquery_engine";
-
-interface PrismaLayerProps extends Omit<LayerVersionProps, "code"> {
-  // e.g. 5.0.0
-  prismaVersion?: string;
-
-  // some more modules to add to the layer
-  nodeModules?: string[];
-
-  // prisma libs
-  prismaModules?: string[];
-  // engines to keep
-  prismaEngines?: PrismaEngine[];
-}
-
-class PrismaLayer extends LayerVersion {
+export class PrismaLayer extends LayerVersion {
   externalModules: string[];
 
   environment: Record<string, string>;
@@ -107,7 +83,7 @@ class PrismaLayer extends LayerVersion {
       assetHash: bundleCommandDigest,
 
       bundling: {
-        image: Runtime.NODEJS_18_X.bundlingImage,
+        image: RUNTIME.bundlingImage,
         command: createBundleCommand,
       },
     });
@@ -135,13 +111,24 @@ export default {
   },
   stacks(app) {
     app
+      .stack(function Site({ stack }) {
+        const site = new SvelteKitSite(stack, "site", {
+          customDomain: {
+            domainName:
+              stack.stage === "prod"
+                ? "corporate.internal.icssc.club"
+                : `${stack.stage}-corporate.internal.icssc.club`,
+            hostedZone: "icssc.club",
+          },
+        });
+        stack.addOutputs({ url: site.url });
+      })
       .stack(function Layers({ stack, app }: StackContext) {
         // shared prisma lambda layer
         const prismaLayer = new PrismaLayer(stack, "PrismaLayer", {
           description: "Prisma engine and library",
           layerVersionName: app.logicalPrefixedName("prisma"),
-          prismaVersion: JSON.parse(readFileSync("./package.json", { encoding: "utf8" }))
-            .devDependencies.prisma,
+          prismaVersion: PRISMA_VERSION,
 
           // retain for rollbacks
           removalPolicy: RemovalPolicy.RETAIN,
@@ -156,26 +143,12 @@ export default {
           nodejs: {
             format: "esm",
             esbuild: {
-              banner: {
-                js: `await(async()=>{let{dirname:e}=await import("path"),{fileURLToPath:i}=await import("url");if(typeof globalThis.__filename>"u"&&(globalThis.__filename=i(import.meta.url)),typeof globalThis.__dirname>"u"&&(globalThis.__dirname='/var/task'),typeof globalThis.require>"u"){let{default:a}=await import("module");globalThis.require=a.createRequire(import.meta.url)}})();`,
-              },
-              external: ["encoding", "@prisma/client/runtime"].concat(prismaLayer.externalModules),
+              banner: { js: ESM_REQUIRE_SHIM },
+              external: LAYER_MODULES.concat(prismaLayer.externalModules),
               sourcemap: true,
             },
           },
         });
-      })
-      .stack(function Site({ stack }) {
-        const site = new SvelteKitSite(stack, "site", {
-          customDomain: {
-            domainName:
-              stack.stage === "prod"
-                ? "corporate.internal.icssc.club"
-                : `${stack.stage}-corporate.internal.icssc.club`,
-            hostedZone: "icssc.club",
-          },
-        });
-        stack.addOutputs({ url: site.url });
       });
     if (app.stage !== "prod") {
       app.setDefaultRemovalPolicy("destroy");
