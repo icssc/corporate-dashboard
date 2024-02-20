@@ -54,7 +54,6 @@
     <ChevronsUpDown size="16" />
   </div>
   <span class="sr-only">Open Popover</span>
-  <noscript class="no-js">MUST ENABLE JAVASCRIPT</noscript>
 </button>
 
 {#if $open}
@@ -102,13 +101,5 @@
     border-radius: 12px;
     border: 1px solid var(--gray100);
     background-color: var(--background);
-  }
-
-  .no-js {
-    color: red;
-    padding-left: 34px;
-    font-weight: bold;
-    font-size: 20px;
-    letter-spacing: 6px;
   }
 </style>

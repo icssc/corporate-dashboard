@@ -168,6 +168,11 @@
         {/each}
       </tr>
     {/each}
+    <noscript>
+      <tr>
+        <td class="no-js"> This Application Requires JS to Work </td>
+      </tr>
+    </noscript>
     <LineTableRow loading={$contactsQuery.isLoading} />
   </thead>
   <tbody>
@@ -240,6 +245,13 @@
           user-select: none;
         }
       }
+    }
+
+    .no-js {
+      color: red;
+      padding-left: 16px;
+      font-weight: bold;
+      font-size: 20px;
     }
 
     td {

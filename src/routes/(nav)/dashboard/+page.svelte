@@ -35,6 +35,7 @@
 
 <main>
   <h1>Hello, {data.name}</h1>
+  <noscript>This Application Requires JS to Work </noscript>
   <div class="header">
     <h2>Members</h2>
     <div class="counts">
@@ -161,5 +162,12 @@
     justify-content: flex-end;
     margin: 12px 16px;
     gap: 12px;
+  }
+
+  noscript {
+    color: red;
+    padding-left: 16px;
+    font-weight: bold;
+    font-size: 20px;
   }
 </style>
