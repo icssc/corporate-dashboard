@@ -9,13 +9,18 @@
   } from "@tanstack/svelte-table";
   import type { SortingState, RowSelectionState, TableOptions } from "@tanstack/svelte-table";
   import { CheckSquare, Square } from "lucide-svelte";
+  import { getContext } from "svelte";
   import { writable } from "svelte/store";
+
+  import type { SelectedContacts } from "./+page.svelte";
 
   import type { GetContacts } from "$api/contacts";
   import { page } from "$app/stores";
   import Drawer from "$lib/components/Drawer.svelte";
   import LineTableRow from "$lib/components/LineTableRow.svelte";
   import { formatDateToPST } from "$lib/util/formatDateToPST";
+
+  const selectedRows = getContext<SelectedContacts>("selectedContacts");
 
   let sorting = [] as SortingState;
   let rowSelection = {} as RowSelectionState;
@@ -81,6 +86,9 @@
       } else {
         rowSelection = updater;
       }
+
+      const selectedRowIds = Object.keys(rowSelection).filter((key) => rowSelection[key]);
+      selectedRows.set(selectedRowIds);
 
       options.update((old) => ({
         ...old,
