@@ -1,14 +1,14 @@
-import { prisma } from "@lucia-auth/adapter-prisma";
+import { postgres as postgresAdapter } from "@lucia-auth/adapter-postgresql";
 import { google } from "@lucia-auth/oauth/providers";
 import { lucia } from "lucia";
 import { sveltekit } from "lucia/middleware";
 
 import { dev } from "$app/environment";
 import { GOOGLE_OAUTH_CLIENT_ID, GOOGLE_OAUTH_CLIENT_SECRET, STAGE } from "$env/static/private";
-import { prisma as client } from "$lib/server/prisma";
+import { postgres } from "$lib/server/postgres";
 
 export const auth = lucia({
-  adapter: prisma(client),
+  adapter: postgresAdapter(postgres, { user: "User", key: "Key", session: "Session" }),
   env: dev ? "DEV" : "PROD",
   middleware: sveltekit(),
   getUserAttributes: ({ role, name, email }) => ({ role, name, email }),

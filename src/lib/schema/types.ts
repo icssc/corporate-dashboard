@@ -1,5 +1,6 @@
-import { ContactStatus, UserRole } from "@prisma/client";
 import z from "zod";
+
+import { contactStatus, userRole } from "$lib/db/schema";
 
 export const CompanyInput = z.object({
   name: z.string(),
@@ -20,12 +21,12 @@ export const ContactInput = z.object({
       create: CompanyInput,
     }),
   ]),
-  status: z.nativeEnum(ContactStatus),
+  status: z.enum(contactStatus),
   lastContactDate: z.string().datetime().optional(),
   followupDate: z.string().datetime().optional(),
   notes: z.string(),
 });
 
 export const MemberInput = z.object({
-  role: z.nativeEnum(UserRole),
+  role: z.enum(userRole),
 });

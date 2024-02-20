@@ -1,41 +1,33 @@
 import { error, json } from "@sveltejs/kit";
 import type { SortingState } from "@tanstack/svelte-table";
+import { asc, desc, eq } from "drizzle-orm";
 import z from "zod";
 
 import type { RequestHandler } from "./$types";
 
+import { company, contact, user } from "$lib/db/schema";
 import { ContactInput } from "$lib/schema/types";
+import { drizzle } from "$lib/server/drizzle";
 import { auth } from "$lib/server/lucia";
-import { prisma } from "$lib/server/prisma";
 import { parseIntSearchParams } from "$lib/util/parseIntSearchParams";
 
 const findMany = (take: number = 50, skip?: number, filter?: string, sorting?: SortingState) =>
-  prisma.contact.findMany({
-    where: { committeeMemberUserId: filter },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      title: true,
-      company: {
-        select: { id: true, name: true },
-      },
-      status: true,
-      committeeMember: {
-        select: { id: true, name: true },
-      },
-      lastContactDate: true,
-      followupDate: true,
-      notes: true,
-    },
-    take,
-    skip,
-    ...(sorting && {
-      orderBy: {
-        [sorting[0].id]: sorting[0].desc ? "desc" : "asc",
-      },
-    }),
-  });
+  drizzle
+    .select()
+    .from(contact)
+    .where(eq(contact.committeeMemberUserId, filter))
+    .innerJoin(company, eq(contact.companyId, company.id))
+    .innerJoin(user, eq(contact.committeeMemberUserId, user.id))
+    .limit(take)
+    .offset(skip)
+    .orderBy(sorting ? (sorting[0].desc ? desc(sorting[0].id) : asc(sorting[0].id)) : undefined)
+    .then((result) =>
+      result.map(({ company, committeeMember, ...results }) => ({
+        ...results,
+        company: { id: company.id, name: company.name },
+        committeeMember: { id: committeeMember.id, name: committeeMember.name },
+      })),
+    );
 
 const SortingState = z.array(
   z.object({
@@ -67,9 +59,25 @@ export const GET: RequestHandler = async (event) => {
 export type GetContacts = Awaited<ReturnType<typeof findMany>>;
 
 const create = (data: z.infer<typeof ContactInput>) =>
-  prisma.contact.create({
-    data,
-  });
+  "connect" in data.company
+    ? drizzle.insert(contact).values(
+        (() => {
+          const { company, ...other } = data;
+          return { ...other, companyId: company.connect.id };
+        })(),
+      )
+    : drizzle.transaction(async (txn) => {
+        const { id } = await txn
+          .insert(company)
+          .values(data.company.create)
+          .returning({ id: company.id });
+        await txn.insert(contact).values(
+          (() => {
+            const { company: _, ...other } = data;
+            return { ...other, companyId: id };
+          })(),
+        );
+      });
 
 export const POST: RequestHandler = async (event) => {
   const session = await auth.handleRequest(event).validate();
