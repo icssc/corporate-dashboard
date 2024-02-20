@@ -61,14 +61,14 @@
   .overlay {
     position: fixed;
     inset: 0;
-    z-index: 50;
+    z-index: 999;
     background-color: var(--gray600);
     opacity: 0.5;
   }
 
   .content {
     position: fixed;
-    z-index: 50;
+    z-index: 1000;
     padding: 1.5rem;
     background-color: var(--background);
     box-shadow:
