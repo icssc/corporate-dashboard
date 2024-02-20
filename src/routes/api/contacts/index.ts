@@ -1,1 +1,1 @@
-export type { GetContacts } from "./+server";
+export type { GetContacts, PostContact } from "./+server";

@@ -66,6 +66,11 @@ export const GET: RequestHandler = async (event) => {
 
 export type GetContacts = Awaited<ReturnType<typeof findMany>>;
 
+const create = (data: z.infer<typeof ContactInput>) =>
+  prisma.contact.create({
+    data,
+  });
+
 export const POST: RequestHandler = async (event) => {
   const session = await auth.handleRequest(event).validate();
   if (!session || session.user.role === "UNAUTHORIZED") {
@@ -73,12 +78,10 @@ export const POST: RequestHandler = async (event) => {
   }
   const input = ContactInput.safeParse(event.request.json());
   if (input.success) {
-    return json(
-      await prisma.contact.create({
-        data: input.data,
-      }),
-    );
+    return json(await create(input.data));
   } else {
     throw error(500, input.error);
   }
 };
+
+export type PostContact = Awaited<ReturnType<typeof create>>;
