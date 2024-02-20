@@ -3,13 +3,30 @@ import { readFileSync } from "node:fs";
 
 import { RemovalPolicy } from "aws-cdk-lib";
 import { AssetHashType, IgnoreMode } from "aws-cdk-lib";
-import { Code, LayerVersion } from "aws-cdk-lib/aws-lambda";
+import { Code, LayerVersion, LayerVersionProps, Runtime } from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
 import type { SSTConfig } from "sst";
 import { App } from "sst/constructs";
 import { StackContext, SvelteKitSite } from "sst/constructs";
 
-export class PrismaLayer extends LayerVersion {
+const PRISMA_LAYER_EXTERNAL = ["@prisma/engines", "@prisma/engines-version", "@prisma/internals"];
+
+type PrismaEngine = "introspection-engine" | "schema-engine" | "prisma-fmt" | "libquery_engine";
+
+interface PrismaLayerProps extends Omit<LayerVersionProps, "code"> {
+  // e.g. 5.0.0
+  prismaVersion?: string;
+
+  // some more modules to add to the layer
+  nodeModules?: string[];
+
+  // prisma libs
+  prismaModules?: string[];
+  // engines to keep
+  prismaEngines?: PrismaEngine[];
+}
+
+class PrismaLayer extends LayerVersion {
   externalModules: string[];
 
   environment: Record<string, string>;
@@ -90,7 +107,7 @@ export class PrismaLayer extends LayerVersion {
       assetHash: bundleCommandDigest,
 
       bundling: {
-        image: RUNTIME.bundlingImage,
+        image: Runtime.NODEJS_18_X.bundlingImage,
         command: createBundleCommand,
       },
     });
@@ -151,8 +168,10 @@ export default {
           nodejs: {
             format: "esm",
             esbuild: {
-              banner: { js: ESM_REQUIRE_SHIM },
-              external: LAYER_MODULES.concat(prismaLayer.externalModules),
+              banner: {
+                js: `await(async()=>{let{dirname:e}=await import("path"),{fileURLToPath:i}=await import("url");if(typeof globalThis.__filename>"u"&&(globalThis.__filename=i(import.meta.url)),typeof globalThis.__dirname>"u"&&(globalThis.__dirname='/var/task'),typeof globalThis.require>"u"){let{default:a}=await import("module");globalThis.require=a.createRequire(import.meta.url)}})();`,
+              },
+              external: ["encoding", "@prisma/client/runtime"].concat(prismaLayer.externalModules),
               sourcemap: true,
             },
           },
