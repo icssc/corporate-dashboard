@@ -37,7 +37,7 @@
     "@melt-ui/pp": "^0.1.4",
     "@playwright/test": "1.39.0",
     "@sveltejs/adapter-auto": "2.1.1",
-    "@sveltejs/adapter-vercel": "^5.1.0",
+    "@sveltejs/adapter-vercel": "^4.0.0",
     "@sveltejs/kit": "1.27.5",
     "@tanstack/svelte-table": "8.11.7",
     "@tsconfig/node18": "18.2.2",
