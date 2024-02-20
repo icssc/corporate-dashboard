@@ -96,6 +96,7 @@
   }
 
   .content {
+    z-index: 1000;
     position: absolute;
     border-radius: 12px;
     border: 1px solid var(--gray100);
