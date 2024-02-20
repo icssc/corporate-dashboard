@@ -135,18 +135,6 @@ export default {
   },
   stacks(app) {
     app
-      .stack(function Site({ stack }) {
-        const site = new SvelteKitSite(stack, "site", {
-          customDomain: {
-            domainName:
-              stack.stage === "prod"
-                ? "corporate.internal.icssc.club"
-                : `${stack.stage}-corporate.internal.icssc.club`,
-            hostedZone: "icssc.club",
-          },
-        });
-        stack.addOutputs({ url: site.url });
-      })
       .stack(function Layers({ stack, app }: StackContext) {
         // shared prisma lambda layer
         const prismaLayer = new PrismaLayer(stack, "PrismaLayer", {
@@ -176,6 +164,18 @@ export default {
             },
           },
         });
+      })
+      .stack(function Site({ stack }) {
+        const site = new SvelteKitSite(stack, "site", {
+          customDomain: {
+            domainName:
+              stack.stage === "prod"
+                ? "corporate.internal.icssc.club"
+                : `${stack.stage}-corporate.internal.icssc.club`,
+            hostedZone: "icssc.club",
+          },
+        });
+        stack.addOutputs({ url: site.url });
       });
     if (app.stage !== "prod") {
       app.setDefaultRemovalPolicy("destroy");
