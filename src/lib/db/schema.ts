@@ -98,3 +98,9 @@ export const contactRelations = relations(contact, ({ one }) => ({
     references: [user.id],
   }),
 }));
+
+export const email = pgTable("Email", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  submittedAt: timestamp("submitted_at").defaultNow(),
+  raw: text("raw").notNull(),
+});

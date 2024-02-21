@@ -1,6 +1,6 @@
 import {} from "aws-cdk-lib";
 import type { SSTConfig } from "sst";
-import { SvelteKitSite } from "sst/constructs";
+import { Cron, SvelteKitSite } from "sst/constructs";
 
 export default {
   config(_input) {
@@ -24,6 +24,14 @@ export default {
     });
     if (app.stage !== "prod") {
       app.setDefaultRemovalPolicy("destroy");
+    }
+    if (app.stage === "prod") {
+      app.stack(function SendEmail({ stack }) {
+        new Cron(stack, "sendEmail", {
+          schedule: "rate(10 minutes)",
+          job: "services/send-email.main",
+        });
+      });
     }
   },
 } satisfies SSTConfig;
