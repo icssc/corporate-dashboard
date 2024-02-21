@@ -1,11 +1,11 @@
 import { error, json } from "@sveltejs/kit";
-import { createMimeMessage } from "mimetext";
+import { createMimeMessage, Mailbox } from "mimetext";
 
 import type { RequestHandler } from "./$types";
 
-import { gmail } from "$lib/server/gmail";
+import { email } from "$lib/db/schema";
+import { drizzle } from "$lib/server/drizzle";
 import { auth } from "$lib/server/lucia";
-import { sleep } from "$lib/util/sleep";
 
 type AttachmentBase = {
   filename: string;
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async (event) => {
     ({ attachments, htmlBody, plaintextBody, recipient, replyTo, subject }) => {
       const msg = createMimeMessage();
       msg.setSender({ name: "ICS Student Council", addr: "icssc@uci.edu" });
-      msg.setHeader("Reply-To", { addr: replyTo });
+      msg.setHeader("Reply-To", new Mailbox(replyTo));
       msg.setRecipient(recipient);
       msg.setSubject(subject);
       msg.addMessage({ contentType: "text/plain", data: plaintextBody });
@@ -61,9 +61,5 @@ export const POST: RequestHandler = async (event) => {
       return { raw: msg.asEncoded() };
     },
   );
-  for (const requestBody of messages) {
-    await gmail.users.messages.send({ userId: "me", requestBody });
-    await sleep(1000);
-  }
-  return json({});
+  return json(await drizzle.insert(email).values(messages).returning({ id: email.id }));
 };

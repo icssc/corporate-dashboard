@@ -1,4 +1,13 @@
-import { pgTable, uniqueIndex, pgEnum, text, timestamp, index, bigint } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  uniqueIndex,
+  pgEnum,
+  text,
+  timestamp,
+  index,
+  bigint,
+  uuid,
+} from "drizzle-orm/pg-core";
 
 export const userRole = ["ADMIN", "MEMBER", "UNAUTHORIZED"] as const;
 
@@ -106,3 +115,9 @@ export const key = pgTable(
     };
   },
 );
+
+export const email = pgTable("Email", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  submittedAt: timestamp("submitted_at").defaultNow(),
+  raw: text("raw").notNull(),
+});
