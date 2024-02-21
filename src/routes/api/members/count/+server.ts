@@ -1,4 +1,5 @@
 import { error, json } from "@sveltejs/kit";
+import { count, inArray } from "drizzle-orm";
 import z from "zod";
 
 import type { RequestHandler } from "./$types";
@@ -9,8 +10,12 @@ import { auth } from "$lib/server/lucia";
 
 const UserRoleZod = z.array(z.enum(userRole)).optional();
 
-const count = (role: UserRole[] = ["ADMIN", "MEMBER"]) =>
-  drizzle.select({ count: count() }).from(user).where(arrayIn(user.role, role));
+const countMembersWithRoles = (role: UserRole[] = ["ADMIN", "MEMBER"]) =>
+  drizzle
+    .select({ count: count() })
+    .from(user)
+    .where(inArray(user.role, role))
+    .then((x) => x[0]);
 
 export const GET: RequestHandler = async (event) => {
   const session = await auth.handleRequest(event).validate();
@@ -21,7 +26,7 @@ export const GET: RequestHandler = async (event) => {
   const role = event.url.searchParams.get("role") ?? undefined;
   const roleArray = role?.split(",");
 
-  return json(await count(UserRoleZod.parse(roleArray)));
+  return json(await countMembersWithRoles(UserRoleZod.parse(roleArray)));
 };
 
-export type GetMembersCount = Awaited<ReturnType<typeof count>>;
+export type GetMembersCount = Awaited<ReturnType<typeof countMembersWithRoles>>;
