@@ -4,6 +4,7 @@ import z from "zod";
 
 import type { RequestHandler } from "./$types";
 
+import type { UserRole } from "$lib/db/schema";
 import { user, userRole } from "$lib/db/schema";
 import { drizzle } from "$lib/server/drizzle";
 import { auth } from "$lib/server/lucia";
@@ -13,18 +14,17 @@ const UserRoleZod = z.array(z.enum(userRole)).optional();
 
 const findMany = (
   take: number = 50,
-  skip?: number,
+  skip: number = 0,
   search?: string,
-  role: userRole[] = ["ADMIN", "MEMBER"],
+  role: UserRole[] = ["ADMIN", "MEMBER"],
 ) =>
   drizzle
     .select({ id: user.id, role: user.role, name: user.name, email: user.email })
     .from(user)
     .where(
-      and(
-        inArray(user.role, role),
-        search ? or(eq(user.name, search), ilike(user.name, `${search}%`)) : true,
-      ),
+      search
+        ? and(inArray(user.role, role), or(eq(user.name, search), ilike(user.name, `${search}%`)))
+        : inArray(user.role, role),
     )
     .limit(take)
     .offset(skip);

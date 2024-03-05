@@ -3,6 +3,7 @@ import { pgSchema, pgEnum, text, timestamp, bigint, varchar } from "drizzle-orm/
 export const schema = pgSchema("dev");
 
 export const userRole = ["ADMIN", "MEMBER", "UNAUTHORIZED"] as const;
+export type UserRole = (typeof userRole)[number];
 export const userRoleEnum = pgEnum("UserRole", userRole);
 
 export const user = schema.table("auth_user", {

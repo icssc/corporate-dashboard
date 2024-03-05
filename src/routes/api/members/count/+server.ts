@@ -4,7 +4,7 @@ import z from "zod";
 
 import type { RequestHandler } from "./$types";
 
-import { user, userRole } from "$lib/db/schema";
+import { user, userRole, type UserRole } from "$lib/db/schema";
 import { drizzle } from "$lib/server/drizzle";
 import { auth } from "$lib/server/lucia";
 

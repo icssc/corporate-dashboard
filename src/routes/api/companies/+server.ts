@@ -8,12 +8,12 @@ import { drizzle } from "$lib/server/drizzle";
 import { auth } from "$lib/server/lucia";
 import { parseIntSearchParams } from "$lib/util";
 
-const findMany = (take: number = 50, skip?: number) =>
+const findMany = (take: number = 50, skip: number = 0) =>
   drizzle
     .select({ id: company.id, name: company.name, url: company.url })
+    .from(company)
     .limit(take)
-    .offset(skip)
-    .from(company);
+    .offset(skip);
 export const GET: RequestHandler = async (event) => {
   const session = await auth.handleRequest(event).validate();
   if (!session || session.user.role === "UNAUTHORIZED") {

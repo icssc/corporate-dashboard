@@ -10,7 +10,7 @@ import { drizzle } from "$lib/server/drizzle";
 import { auth } from "$lib/server/lucia";
 
 const findUnique = (id: string) =>
-  drizzle.select({ id: user.id, name: user.name }).distinct().where(eq(user.id, id)).from(user);
+  drizzle.selectDistinct({ id: user.id, name: user.name }).from(user).where(eq(user.id, id));
 
 export const GET: RequestHandler = async (event) => {
   const session = await auth.handleRequest(event).validate();

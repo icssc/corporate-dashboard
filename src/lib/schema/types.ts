@@ -22,8 +22,8 @@ export const ContactInput = z.object({
     }),
   ]),
   status: z.enum(contactStatus),
-  lastContactDate: z.string().datetime().optional(),
-  followupDate: z.string().datetime().optional(),
+  lastContactDate: z.coerce.date().optional(),
+  followupDate: z.coerce.date().optional(),
   notes: z.string(),
 });
 
