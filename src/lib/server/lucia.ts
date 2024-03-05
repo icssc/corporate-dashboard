@@ -8,7 +8,11 @@ import { GOOGLE_OAUTH_CLIENT_ID, GOOGLE_OAUTH_CLIENT_SECRET, STAGE } from "$env/
 import { postgres } from "$lib/server/postgres";
 
 export const auth = lucia({
-  adapter: postgresAdapter(postgres, { user: "User", key: "Key", session: "Session" }),
+  adapter: postgresAdapter(postgres, {
+    user: "auth_user",
+    key: "user_key",
+    session: "user_session",
+  }),
   env: dev ? "DEV" : "PROD",
   middleware: sveltekit(),
   getUserAttributes: ({ role, name, email }) => ({ role, name, email }),

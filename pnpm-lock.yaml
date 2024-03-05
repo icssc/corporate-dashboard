@@ -7,7 +7,7 @@ settings:
 dependencies:
   '@lucia-auth/adapter-postgresql':
     specifier: 2.0.2
-    version: 2.0.2(lucia@2.7.4)(postgres@3.4.3)
+    version: 2.0.2(lucia@2.7.4)(pg@8.11.3)(postgres@3.4.3)
   '@lucia-auth/oauth':
     specifier: 3.5.0
     version: 3.5.0(lucia@2.7.4)
@@ -19,7 +19,7 @@ dependencies:
     version: 5.8.2(svelte@4.2.3)
   drizzle-orm:
     specifier: ^0.29.3
-    version: 0.29.3(@aws-sdk/client-rds-data@3.515.0)(kysely@0.25.0)(postgres@3.4.3)(react@18.2.0)
+    version: 0.29.3(@aws-sdk/client-rds-data@3.515.0)(kysely@0.25.0)(pg@8.11.3)(postgres@3.4.3)(react@18.2.0)
   googleapis:
     specifier: 128.0.0
     version: 128.0.0
@@ -118,6 +118,9 @@ devDependencies:
   lint-staged:
     specifier: 15.1.0
     version: 15.1.0
+  pg:
+    specifier: 8.11.3
+    version: 8.11.3
   prettier:
     specifier: 3.1.0
     version: 3.1.0
@@ -135,7 +138,7 @@ devDependencies:
     version: 1.69.5
   sst:
     specifier: 2.36.1
-    version: 2.36.1(@aws-sdk/credential-provider-node@3.515.0)
+    version: 2.36.1(@aws-sdk/credential-provider-node@3.515.0)(pg@8.11.3)
   svelte:
     specifier: 4.2.3
     version: 4.2.3
@@ -2737,7 +2740,7 @@ packages:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  /@lucia-auth/adapter-postgresql@2.0.2(lucia@2.7.4)(postgres@3.4.3):
+  /@lucia-auth/adapter-postgresql@2.0.2(lucia@2.7.4)(pg@8.11.3)(postgres@3.4.3):
     resolution: {integrity: sha512-gQ7SlFu+gxQj2IX2J8ZVivcLBbdnf9SbNQOVWkJxZOdY1uaaIQGeNfEDld2Awy02VrXmA4sjHsbkJx1JPVw2+A==}
     peerDependencies:
       lucia: ^2.0.0
@@ -2750,6 +2753,7 @@ packages:
         optional: true
     dependencies:
       lucia: 2.7.4
+      pg: 8.11.3
       postgres: 3.4.3
     dev: false
 
@@ -4563,6 +4567,10 @@ packages:
   /buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
 
+  /buffer-writer@2.0.0:
+    resolution: {integrity: sha512-a7ZpuTZU1TRtnwyCNW3I5dc0wWNC3VR9S++Ewyk2HHZdrO3CQJqSpd+95Us590V6AL7JqUAH2IwZ/398PmNFgw==}
+    engines: {node: '>=4'}
+
   /buffer@4.9.2:
     resolution: {integrity: sha512-xq+q3SRMOxGivLhBNaUdC64hDTQwejJ+H0T/NB1XMtTVEwNTrfFF3gAxiyW0Bu/xWEGhjVKgUcMhCrUy2+uCWg==}
     dependencies:
@@ -5423,7 +5431,7 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.29.3(@aws-sdk/client-rds-data@3.515.0)(kysely@0.25.0)(postgres@3.4.3)(react@18.2.0):
+  /drizzle-orm@0.29.3(@aws-sdk/client-rds-data@3.515.0)(kysely@0.25.0)(pg@8.11.3)(postgres@3.4.3)(react@18.2.0):
     resolution: {integrity: sha512-uSE027csliGSGYD0pqtM+SAQATMREb3eSM/U8s6r+Y0RFwTKwftnwwSkqx3oS65UBgqDOM0gMTl5UGNpt6lW0A==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
@@ -5496,6 +5504,7 @@ packages:
     dependencies:
       '@aws-sdk/client-rds-data': 3.515.0
       kysely: 0.25.0
+      pg: 8.11.3
       postgres: 3.4.3
       react: 18.2.0
     dev: false
@@ -7522,7 +7531,7 @@ packages:
     resolution: {integrity: sha512-Ne7wqW7/9Cz54PDt4I3tcV+hAyat8ypyOGzYRJQfdxnnjeWsTxt1cy8pjvvKeI5kfXuyvULyeeAvwvvtAX3ayQ==}
     dev: true
 
-  /kysely-codegen@0.10.1(kysely@0.25.0):
+  /kysely-codegen@0.10.1(kysely@0.25.0)(pg@8.11.3):
     resolution: {integrity: sha512-8Bslh952gN5gtucRv4jTZDFD18RBioS6M50zHfe5kwb5iSyEAunU4ZYMdHzkHraa4zxjg5/183XlOryBCXLRIw==}
     hasBin: true
     peerDependencies:
@@ -7543,6 +7552,7 @@ packages:
       kysely: 0.25.0
       micromatch: 4.0.5
       minimist: 1.2.8
+      pg: 8.11.3
     dev: true
 
   /kysely-data-api@0.2.1(@aws-sdk/client-rds-data@3.515.0)(kysely@0.25.0):
@@ -8474,6 +8484,9 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
+  /packet-reader@1.0.0:
+    resolution: {integrity: sha512-HAKu/fG3HpHFO0AA8WE8q2g+gBJaZ9MG7fcKk+IJPLTGAD6Psw4443l+9DGRbOIh3/aXr7Phy0TjilYivJo5XQ==}
+
   /parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
     engines: {node: '>=6'}
@@ -8565,6 +8578,62 @@ packages:
       '@types/estree': 1.0.5
       estree-walker: 3.0.3
       is-reference: 3.0.2
+
+  /pg-cloudflare@1.1.1:
+    resolution: {integrity: sha512-xWPagP/4B6BgFO+EKz3JONXv3YDgvkbVrGw2mTo3D6tVDQRh1e7cqVGvyR3BE+eQgAvx1XhW/iEASj4/jCWl3Q==}
+    requiresBuild: true
+    optional: true
+
+  /pg-connection-string@2.6.2:
+    resolution: {integrity: sha512-ch6OwaeaPYcova4kKZ15sbJ2hKb/VP48ZD2gE7i1J+L4MspCtBMAx8nMgz7bksc7IojCIIWuEhHibSMFH8m8oA==}
+
+  /pg-int8@1.0.1:
+    resolution: {integrity: sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==}
+    engines: {node: '>=4.0.0'}
+
+  /pg-pool@3.6.1(pg@8.11.3):
+    resolution: {integrity: sha512-jizsIzhkIitxCGfPRzJn1ZdcosIt3pz9Sh3V01fm1vZnbnCMgmGl5wvGGdNN2EL9Rmb0EcFoCkixH4Pu+sP9Og==}
+    peerDependencies:
+      pg: '>=8.0'
+    dependencies:
+      pg: 8.11.3
+
+  /pg-protocol@1.6.0:
+    resolution: {integrity: sha512-M+PDm637OY5WM307051+bsDia5Xej6d9IR4GwJse1qA1DIhiKlksvrneZOYQq42OM+spubpcNYEo2FcKQrDk+Q==}
+
+  /pg-types@2.2.0:
+    resolution: {integrity: sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==}
+    engines: {node: '>=4'}
+    dependencies:
+      pg-int8: 1.0.1
+      postgres-array: 2.0.0
+      postgres-bytea: 1.0.0
+      postgres-date: 1.0.7
+      postgres-interval: 1.2.0
+
+  /pg@8.11.3:
+    resolution: {integrity: sha512-+9iuvG8QfaaUrrph+kpF24cXkH1YOOUeArRNYIxq1viYHZagBxrTno7cecY1Fa44tJeZvaoG+Djpkc3JwehN5g==}
+    engines: {node: '>= 8.0.0'}
+    peerDependencies:
+      pg-native: '>=3.0.1'
+    peerDependenciesMeta:
+      pg-native:
+        optional: true
+    dependencies:
+      buffer-writer: 2.0.0
+      packet-reader: 1.0.0
+      pg-connection-string: 2.6.2
+      pg-pool: 3.6.1(pg@8.11.3)
+      pg-protocol: 1.6.0
+      pg-types: 2.2.0
+      pgpass: 1.0.5
+    optionalDependencies:
+      pg-cloudflare: 1.1.1
+
+  /pgpass@1.0.5:
+    resolution: {integrity: sha512-FdW9r/jQZhSeohs1Z3sI1yxFQNFvMcnmfuj4WBMUTxOrAyLMaTcE1aAMBiTlbMNaXvBCQuVi0R7hd8udDSP7ug==}
+    dependencies:
+      split2: 4.2.0
 
   /picocolors@1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}
@@ -8668,6 +8737,24 @@ packages:
       picocolors: 1.0.0
       source-map-js: 1.0.2
     dev: true
+
+  /postgres-array@2.0.0:
+    resolution: {integrity: sha512-VpZrUqU5A69eQyW2c5CA1jtLecCsN2U/bD6VilrFDWq5+5UIEVO7nazS3TEcHf1zuPYO/sqGvUvW62g86RXZuA==}
+    engines: {node: '>=4'}
+
+  /postgres-bytea@1.0.0:
+    resolution: {integrity: sha512-xy3pmLuQqRBZBXDULy7KbaitYqLcmxigw14Q5sj8QBVLqEwXfeybIKVWiqAXTlcvdvb0+xkOtDbfQMOf4lST1w==}
+    engines: {node: '>=0.10.0'}
+
+  /postgres-date@1.0.7:
+    resolution: {integrity: sha512-suDmjLVQg78nMK2UZ454hAG+OAW+HQPZ6n++TNDUX+L0+uUlLywnoxJKDou51Zm+zTCjrCl0Nq6J9C5hP9vK/Q==}
+    engines: {node: '>=0.10.0'}
+
+  /postgres-interval@1.2.0:
+    resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
+    engines: {node: '>=0.10.0'}
+    dependencies:
+      xtend: 4.0.2
 
   /postgres@3.4.3:
     resolution: {integrity: sha512-iHJn4+M9vbTdHSdDzNkC0crHq+1CUdFhx+YqCE+SqWxPjm+Zu63jq7yZborOBF64c8pc58O5uMudyL1FQcHacA==}
@@ -9355,7 +9442,6 @@ packages:
   /split2@4.2.0:
     resolution: {integrity: sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg==}
     engines: {node: '>= 10.x'}
-    dev: true
 
   /sst-aws-cdk@2.101.1:
     resolution: {integrity: sha512-vGIQKCL6FJX7xe68hx47iPOZZtlf4YZk+EAcEL2p02FsVBJSvTg4mPIE1tsqrqXZmrYv4slAZNVmM5o+PYyzAA==}
@@ -9370,7 +9456,7 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /sst@2.36.1(@aws-sdk/credential-provider-node@3.515.0):
+  /sst@2.36.1(@aws-sdk/credential-provider-node@3.515.0)(pg@8.11.3):
     resolution: {integrity: sha512-sEUeM3y+D2Hr9RYkcgCu/ojlBt5kbOwBldcbgLX6G1Ee0dJQh+a9emPZMG/RiC/3DtnVqERM1mxTKRVueDNbDA==}
     hasBin: true
     peerDependencies:
@@ -9434,7 +9520,7 @@ packages:
       ink: 4.4.1(react@18.2.0)
       ink-spinner: 5.0.0(ink@4.4.1)(react@18.2.0)
       kysely: 0.25.0
-      kysely-codegen: 0.10.1(kysely@0.25.0)
+      kysely-codegen: 0.10.1(kysely@0.25.0)(pg@8.11.3)
       kysely-data-api: 0.2.1(@aws-sdk/client-rds-data@3.515.0)(kysely@0.25.0)
       minimatch: 6.2.0
       openid-client: 5.6.4
