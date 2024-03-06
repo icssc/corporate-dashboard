@@ -1,12 +1,14 @@
 import { error, json, type RequestHandler } from "@sveltejs/kit";
+import { eq } from "drizzle-orm";
 import type { z } from "zod";
 
+import { contact } from "$lib/db/schema";
 import { ContactInput } from "$lib/schema/types";
+import { drizzle } from "$lib/server/drizzle";
 import { auth } from "$lib/server/lucia";
-import { prisma } from "$lib/server/prisma";
 
 const update = (id: string, data: z.infer<typeof ContactInput>) =>
-  prisma.contact.update({ where: { id }, data });
+  drizzle.update(contact).set(data).where(eq(contact.id, id));
 
 export const PATCH: RequestHandler = async (event) => {
   const session = await auth.handleRequest(event).validate();
@@ -26,7 +28,7 @@ export const PATCH: RequestHandler = async (event) => {
 
 export type PatchContact = Awaited<ReturnType<typeof update>>;
 
-const deleteContact = (id: string) => prisma.contact.delete({ where: { id } });
+const deleteContact = (id: string) => drizzle.delete(contact).where(eq(contact.id, id));
 
 export const DELETE: RequestHandler = async (event) => {
   const session = await auth.handleRequest(event).validate();

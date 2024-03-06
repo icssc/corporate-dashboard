@@ -1,20 +1,16 @@
 import { error, json } from "@sveltejs/kit";
+import { eq } from "drizzle-orm";
 import type z from "zod";
 
 import type { RequestHandler } from "./$types";
 
+import { user } from "$lib/db/schema";
 import { MemberInput } from "$lib/schema/types";
+import { drizzle } from "$lib/server/drizzle";
 import { auth } from "$lib/server/lucia";
-import { prisma } from "$lib/server/prisma";
 
 const findUnique = (id: string) =>
-  prisma.user.findUnique({
-    where: { id },
-    select: {
-      id: true,
-      name: true,
-    },
-  });
+  drizzle.selectDistinct({ id: user.id, name: user.name }).from(user).where(eq(user.id, id));
 
 export const GET: RequestHandler = async (event) => {
   const session = await auth.handleRequest(event).validate();
@@ -30,10 +26,7 @@ export const GET: RequestHandler = async (event) => {
 export type GetMember = Awaited<ReturnType<typeof findUnique>>;
 
 const update = (id: string, data: z.infer<typeof MemberInput>) =>
-  prisma.user.update({
-    where: { id },
-    data,
-  });
+  drizzle.update(user).set(data).where(eq(user.id, id));
 
 export const PUT: RequestHandler = async (event) => {
   const session = await auth.handleRequest(event).validate();

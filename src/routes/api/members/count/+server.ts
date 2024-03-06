@@ -1,21 +1,21 @@
-import { UserRole } from "@prisma/client";
 import { error, json } from "@sveltejs/kit";
+import { count, inArray } from "drizzle-orm";
 import z from "zod";
 
 import type { RequestHandler } from "./$types";
 
+import { user, userRole, type UserRole } from "$lib/db/schema";
+import { drizzle } from "$lib/server/drizzle";
 import { auth } from "$lib/server/lucia";
-import { prisma } from "$lib/server/prisma";
 
-const UserRoleZod = z.array(z.nativeEnum(UserRole)).optional();
+const UserRoleZod = z.array(z.enum(userRole)).optional();
 
-const count = async (role: UserRole[] = ["ADMIN", "MEMBER"]) => ({
-  count: await prisma.user.count({
-    where: {
-      role: { in: role },
-    },
-  }),
-});
+const countMembersWithRoles = (role: UserRole[] = ["ADMIN", "MEMBER"]) =>
+  drizzle
+    .select({ count: count() })
+    .from(user)
+    .where(inArray(user.role, role))
+    .then((x) => x[0]);
 
 export const GET: RequestHandler = async (event) => {
   const session = await auth.handleRequest(event).validate();
@@ -26,7 +26,7 @@ export const GET: RequestHandler = async (event) => {
   const role = event.url.searchParams.get("role") ?? undefined;
   const roleArray = role?.split(",");
 
-  return json(await count(UserRoleZod.parse(roleArray)));
+  return json(await countMembersWithRoles(UserRoleZod.parse(roleArray)));
 };
 
-export type GetMembersCount = Awaited<ReturnType<typeof count>>;
+export type GetMembersCount = Awaited<ReturnType<typeof countMembersWithRoles>>;
