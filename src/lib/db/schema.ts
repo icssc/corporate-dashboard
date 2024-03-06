@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import { pgSchema, pgEnum, text, timestamp, bigint, varchar } from "drizzle-orm/pg-core";
 
 export const schema = pgSchema("dev");
@@ -14,6 +15,9 @@ export const user = schema.table("auth_user", {
   name: text("name"),
   email: text("email"),
 });
+export const userRelations = relations(user, ({ many }) => ({
+  contacts: many(contact),
+}));
 
 export const session = schema.table("user_session", {
   id: varchar("id", {
@@ -63,6 +67,9 @@ export const company = schema.table("company", {
   name: text("name").notNull(),
   url: text("url"),
 });
+export const companyRelations = relations(company, ({ many }) => ({
+  contacts: many(contact),
+}));
 
 export const contact = schema.table("contact", {
   id: text("id").primaryKey().notNull(),
@@ -81,3 +88,13 @@ export const contact = schema.table("contact", {
   followupDate: timestamp("followupDate", { precision: 3 }),
   notes: text("notes"),
 });
+export const contactRelations = relations(contact, ({ one }) => ({
+  company: one(company, {
+    fields: [contact.companyId],
+    references: [company.id],
+  }),
+  committeeMember: one(user, {
+    fields: [contact.committeeMemberUserId],
+    references: [user.id],
+  }),
+}));
