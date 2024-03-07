@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgSchema, pgEnum, text, timestamp, bigint, varchar } from "drizzle-orm/pg-core";
+import { pgSchema, pgEnum, text, timestamp, bigint, varchar, uuid } from "drizzle-orm/pg-core";
 
 export const schema = pgSchema("dev");
 
@@ -99,7 +99,7 @@ export const contactRelations = relations(contact, ({ one }) => ({
   }),
 }));
 
-export const email = pgTable("Email", {
+export const email = schema.table("email", {
   id: uuid("id").primaryKey().defaultRandom(),
   submittedAt: timestamp("submitted_at").defaultNow(),
   raw: text("raw").notNull(),
