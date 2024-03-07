@@ -27,7 +27,7 @@
     "googleapis": "128.0.0",
     "lucia": "2.7.4",
     "lucide-svelte": "0.292.0",
-    "mimetext": "3.0.16",
+    "mimetext": "3.0.21",
     "postgres": "3.4.3",
     "zod": "3.22.4"
   },
