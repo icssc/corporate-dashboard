@@ -8,7 +8,7 @@
     createColumnHelper,
   } from "@tanstack/svelte-table";
   import type { SortingState, RowSelectionState, TableOptions } from "@tanstack/svelte-table";
-  import { CheckSquare, Square } from "lucide-svelte";
+  import { Check } from "lucide-svelte";
   import { getContext } from "svelte";
   import { writable } from "svelte/store";
 
@@ -134,14 +134,14 @@
       <tr>
         <th class="padding-left">
           <button
+            class="select"
+            class:is-selected={$table.getIsAllPageRowsSelected()}
             on:click={() => {
               $table.toggleAllPageRowsSelected();
             }}
           >
             {#if $table.getIsAllPageRowsSelected()}
-              <CheckSquare />
-            {:else}
-              <Square />
+              <Check size={16} />
             {/if}
           </button>
         </th>
@@ -178,19 +178,19 @@
   <tbody>
     {#each $table.getRowModel().rows.slice(0, 10) as row}
       <tr class:selected={row.getIsSelected()}>
-        <th class="padding-left">
+        <td class="padding-left">
           <button
+            class="select"
+            class:is-selected={row.getIsSelected()}
             on:click={() => {
               row.toggleSelected();
             }}
           >
             {#if row.getIsSelected()}
-              <CheckSquare />
-            {:else}
-              <Square />
+              <Check size={16} />
             {/if}
           </button>
-        </th>
+        </td>
         {#each row.getVisibleCells() as cell}
           <td>
             {#if cell.column.id === "notes"}
@@ -215,8 +215,31 @@
     min-width: 100%;
     border-spacing: 0;
 
-    tbody tr:hover {
-      background-color: var(--gray100);
+    .select {
+      all: unset;
+      border: 1px solid var(--gray600);
+      border-radius: 4px;
+      height: 16px;
+      width: 16px;
+      color: var(--background);
+
+      &.is-selected {
+        background-color: var(--gray600);
+      }
+    }
+
+    tbody tr {
+      &.selected {
+        background-color: var(--pink100);
+
+        &:hover {
+          background-color: var(--pink200);
+        }
+      }
+
+      &:hover {
+        background-color: var(--gray100);
+      }
     }
 
     th,
@@ -258,14 +281,6 @@
       $border: 0.75px solid var(--gray100);
       border-left: $border;
       border-bottom: $border;
-    }
-
-    .selected {
-      background-color: var(--pink300);
-
-      &:hover {
-        background-color: var(--pink200);
-      }
     }
   }
 </style>
