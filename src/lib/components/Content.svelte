@@ -19,12 +19,12 @@
   } = createCombobox<string | undefined>({
     onSelectedChange: ({ next }) => {
       if (next?.value === null) {
-        goto("/");
+        goto("/contacts");
         close();
         return undefined;
       }
       if (next?.value) {
-        goto(next.value);
+        goto("/contacts/" + next.value);
         close();
         return undefined;
       }

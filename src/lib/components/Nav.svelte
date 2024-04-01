@@ -18,13 +18,13 @@
       <Slash size="16" />
     </div>
     <span>Corporate Contacts</span>
-    {#if $page.route.id === "/(nav)/[[selectedMember]]"}
+    {#if $page.route.id === "/(nav)/contacts/[[selectedMember]]"}
       <div class="slash">
         <Slash size="16" />
       </div>
       <Selector />
     {/if}
-    {#if $page.route.id === "/(nav)/dashboard"}
+    {#if $page.route.id === "/(nav)/(dashboard)"}
       <div class="slash">
         <Slash size="16" />
       </div>
