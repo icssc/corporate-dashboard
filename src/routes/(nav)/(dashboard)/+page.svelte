@@ -1,5 +1,6 @@
 <script lang="ts">
   import { createQuery } from "@tanstack/svelte-query";
+  import { TableIcon } from "lucide-svelte";
 
   import type { PageData } from "./$types";
   import AddMember from "./AddMember.svelte";
@@ -37,6 +38,10 @@
 <main>
   <h1>Hello, {data.name}</h1>
   <noscript>This Application Requires JS to Work </noscript>
+  <a class="contacts" href="/contacts">
+    <TableIcon strokeWidth={1.5} />
+    <span>View Contacts ↗</span>
+  </a>
   <div class="header">
     <h2>Members</h2>
     <div class="counts">
@@ -91,6 +96,26 @@
     font-size: 28px;
     font-weight: 500;
     margin: 48px 16px;
+  }
+
+  .contacts {
+    display: block;
+    margin: 48px 16px;
+    padding: 12px;
+    border-radius: 6px;
+    color: var(--gray600);
+    border: var(--gray300) 1px solid;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    max-width: 480px;
+    text-decoration: none;
+    font-size: 16px;
+    transition: border 100ms ease-in-out;
+
+    &:hover {
+      border-color: var(--gray100);
+    }
   }
 
   .header {
