@@ -8,6 +8,9 @@ const config = {
   preprocess: sequence([vitePreprocess(), preprocessMeltUI()]),
   kit: {
     adapter: adapter(),
+    alias: {
+      $api: "src/routes/api",
+    },
   },
 };
 
