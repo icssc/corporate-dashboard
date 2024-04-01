@@ -11,9 +11,9 @@
 
 <nav>
   <div class="left">
-    <div id="logo">
+    <a id="logo" href="/">
       <Logo />
-    </div>
+    </a>
     <div class="slash">
       <Slash size="16" />
     </div>
@@ -56,9 +56,10 @@
   #logo {
     width: 32px;
     line-height: 0;
+    color: var(--gray600);
 
     &:hover {
-      color: var(--pink200);
+      color: var(--pink400);
     }
   }
 
